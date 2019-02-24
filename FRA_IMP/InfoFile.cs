@@ -19,7 +19,7 @@ namespace FRA_IMP
             textBoxFileName.Text = file.FileName;
             textBoxPath.Text = file.FilePath;
             textBoxFileType.Text = file.FRAFileType.ToString();
-            textBoxReferenceResistor.Text = file.ReferenceResistorOhms.ToString(FRAResult.GetImpedanceFormat(file.ReferenceResistorOhms*1000));
+            textBoxReferenceResistor.Text = (file.ReferenceResistorOhms*1000).ToString(FRAResult.GetImpedanceFormat(file.ReferenceResistorOhms*1000));
             textBoxMinFrequency.Text = file.MinFrequencyHz.ToString(FRAResult.GetFrequencyFormat(file.MinFrequencyHz,true));
             textBoxMaxFrequency.Text = file.MaxFrequencyHz.ToString(FRAResult.GetFrequencyFormat(file.MaxFrequencyHz, true));
             textBoxNrOfDataPoints.Text = file.Count.ToString();

@@ -29,24 +29,9 @@ namespace FRA_IMP
             // logger
             m_LogService = new FileLogService(typeof(CurrentSettings));
 
-            // first time program is run, set default folders (default is different depending on operating system)
-            if (Properties.Settings.Default.PathSettingsFile.Equals(""))
-            {
-                string defaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                Properties.Settings.Default.PathSettingsFile = Path.Combine(defaultPath, "FRA_IMP\\default.set");
-                Properties.Settings.Default.Save();
-            }
-
-            if (File.Exists(Properties.Settings.Default.PathSettingsFile))
-            {
-                IniSettingsController.Instance.LoadFile("Settings", Properties.Settings.Default.PathSettingsFile);
-            }
-            else IniSettingsController.Instance.CreateFile("Settings", Properties.Settings.Default.PathSettingsFile);
-
             // Settings to be stored in ini file type
             m_SettingsManager = new IniSettingsManager("General", "Settings");
-            m_SettingsManager.NewFileLoaded += M_SettingsManager_NewFileLoaded;
-       
+            m_SettingsManager.NewFileLoaded += M_SettingsManager_NewFileLoaded;     
         }
 
         #endregion
@@ -62,10 +47,10 @@ namespace FRA_IMP
 
         #region Current Settings
 
-        public string PathLastFRA4PFile
+        public string PathLastMeasurementFile
         {
-            get { return m_SettingsManager.GetStringValue("PathLastFRA4PFile", ""); }
-            set { m_SettingsManager.SetStringValue("PathLastFRA4PFile", value); }
+            get { return m_SettingsManager.GetStringValue("PathLastMeasurementFile", ""); }
+            set { m_SettingsManager.SetStringValue("PathLastMeasurementFile", value); }
         }
 
         public string PathLastImageFile

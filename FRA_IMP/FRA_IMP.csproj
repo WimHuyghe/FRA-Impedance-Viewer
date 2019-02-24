@@ -79,6 +79,8 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="FRA4Picoscope.cs" />
+    <Compile Include="FRA4PicoscopeAPI.cs" />
     <Compile Include="FRAFileCollection.cs" />
     <Compile Include="FRAFileEventArgs.cs" />
     <Compile Include="FRAResult.cs" />
@@ -106,6 +108,12 @@
     </Compile>
     <Compile Include="InfoTestSetup.Designer.cs">
       <DependentUpon>InfoTestSetup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MeasurePicoscope.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MeasurePicoscope.Designer.cs">
+      <DependentUpon>MeasurePicoscope.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -138,6 +146,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InfoTestSetup.resx">
       <DependentUpon>InfoTestSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MeasurePicoscope.resx">
+      <DependentUpon>MeasurePicoscope.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -253,7 +264,9 @@
     <None Include="Resources\file1.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FRA4PicoScope.dll" />
     <Content Include="icon_lcr256.ico" />
+    <None Include="Resources\R&amp;S.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

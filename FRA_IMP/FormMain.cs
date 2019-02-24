@@ -22,6 +22,7 @@ namespace FRA_IMP
         private Color cursorColor = Color.Black;
         private Color lineGridColor = Color.LightGray;
         private bool m_logFrequencyAxis;
+        private bool mainFormActive=true;
 
         private ILogService logService;
         private FRAFileCollection m_Files;
@@ -33,12 +34,36 @@ namespace FRA_IMP
             logService = new FileLogService(typeof(FormMain));
             logService.Info("Starting FRAImpedance...");
             InitializeComponent();
+            InitSettingsController();//must be initialized before settings are used.
             WindowState = FormWindowState.Maximized;
             this.Text = "FRA Impedance Viewer";
             m_Files = new FRAFileCollection();
             m_Files.CollectionChanged += m_Files_CollectionChanged;
             m_logFrequencyAxis = CurrentSettings.Instance.LogaritmicFrequencyAxis;
             InitCharts();
+        }
+
+        private void InitSettingsController()
+        {
+            // first time program is run, set default folders (default is different depending on operating system)
+            if (Properties.Settings.Default.PathSettingsFile.Equals(""))
+            {          
+                string defaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                Properties.Settings.Default.PathSettingsFile = Path.Combine(defaultPath, "FRA_IMP\\default.set");
+                logService.Info("Path settings file set to: " + Properties.Settings.Default.PathSettingsFile);
+                Properties.Settings.Default.Save();
+            }
+
+            if (File.Exists(Properties.Settings.Default.PathSettingsFile))
+            {
+                IniSettingsController.Instance.LoadFile("Settings", Properties.Settings.Default.PathSettingsFile);
+                logService.Info("Settings file loaded: " + Properties.Settings.Default.PathSettingsFile);
+            }
+            else
+            {
+                IniSettingsController.Instance.CreateFile("Settings", Properties.Settings.Default.PathSettingsFile);
+                logService.Info("Settings file created: " + Properties.Settings.Default.PathSettingsFile);
+            }
         }
 
         private void m_Files_CollectionChanged(object sender, FRAFileEventArgs e)
@@ -52,10 +77,12 @@ namespace FRA_IMP
 
         private void InitCharts()
         {
+            logService.Debug("Starting with initialization of charts");
             InitChartGainPhase();
             InitChartImpedance();
             InitChartCapacitance();
             InitChartInductance();
+            logService.Debug("Initialization of charts finished");
         }
 
         private void SetChartDefaults(Chart chart)
@@ -110,7 +137,6 @@ namespace FRA_IMP
             chartGainPhase.MouseMove += ChartGainPhase_MouseMove;
             chartGainPhase.MouseDown += ChartGainPhase_MouseDown;
             chartGainPhase.MouseEnter += ChartGainPhase_MouseEnter;
-            chartGainPhase.MouseLeave += ChartGainPhase_MouseLeave;
             chartGainPhase.KeyDown += ChartGainPhase_KeyDown;
         }
 
@@ -125,7 +151,6 @@ namespace FRA_IMP
             chartImpedance.MouseMove += ChartImpedance_MouseMove;
             chartImpedance.MouseDown += ChartImpedance_MouseDown;
             chartImpedance.MouseEnter += ChartImpedance_MouseEnter;
-            chartImpedance.MouseLeave += ChartImpedance_MouseLeave;
             chartImpedance.KeyDown += ChartImpedance_KeyDown;
         }
 
@@ -140,7 +165,6 @@ namespace FRA_IMP
             chartCapacitance.MouseMove += ChartCapacitance_MouseMove;
             chartCapacitance.MouseDown += ChartCapacitance_MouseDown;
             chartCapacitance.MouseEnter += ChartCapacitance_MouseEnter;
-            chartCapacitance.MouseLeave += ChartCapacitance_MouseLeave;
             chartCapacitance.KeyDown += ChartCapacitance_KeyDown;
         }
 
@@ -155,7 +179,6 @@ namespace FRA_IMP
             chartInductance.MouseMove += ChartInductance_MouseMove;
             chartInductance.MouseDown += ChartInductance_MouseDown;
             chartInductance.MouseEnter += ChartInductance_MouseEnter;
-            chartInductance.MouseLeave += ChartInductance_MouseLeave;
             chartInductance.KeyDown += ChartInductance_KeyDown;
         }
 
@@ -217,6 +240,23 @@ namespace FRA_IMP
         private void keysightFileToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             OpenFRA_File(false, FRAFileType.Keysight);
+        }
+
+        private void rhodeSwToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFRA_File(true, FRAFileType.RhodeSchwarz);
+        }
+
+        private void rhodeSchwarzFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFRA_File(false, FRAFileType.RhodeSchwarz);
+        }
+
+        private void picoscopeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MeasurePicoscope form = new MeasurePicoscope(m_Files);
+            mainFormActive = false;
+            form.Show();
         }
 
         private void shortcutsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -373,13 +413,13 @@ namespace FRA_IMP
         private void OpenFRA_File(bool newChart, FRAFileType fileType)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.InitialDirectory = CurrentSettings.Instance.PathLastFRA4PFile;
+            dialog.InitialDirectory = CurrentSettings.Instance.PathLastMeasurementFile;
             dialog.Filter = "FRA File (*.csv)|*.csv";
             if (fileType == FRAFileType.FRA4PicoScope) dialog.Title = "Load FRA4PicoScope Export";
             if (fileType == FRAFileType.Keysight) dialog.Title = "Load Keysight Bode Plot Export";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                CurrentSettings.Instance.PathLastFRA4PFile = dialog.FileName;
+                CurrentSettings.Instance.PathLastMeasurementFile = dialog.FileName;
                 // request reference resitor value
                 string refResistorInput = CurrentSettings.Instance.ReferenceResistor.ToString();
                 double referenceResistor;
@@ -404,12 +444,15 @@ namespace FRA_IMP
         private void CopyImageToClipboard()
         {
             Chart chart = GetDisplayedChart();
-            using (MemoryStream ms = new MemoryStream())
+            if (chart != null)
             {
-                logService.Debug("Copy chart to clipboard");
-                chart.SaveImage(ms, ChartImageFormat.Bmp);
-                Bitmap bm = new Bitmap(ms);
-                Clipboard.SetImage(bm);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    logService.Debug("Copy chart to clipboard");
+                    chart.SaveImage(ms, ChartImageFormat.Bmp);
+                    Bitmap bm = new Bitmap(ms);
+                    Clipboard.SetImage(bm);
+                }
             }
         }
 
@@ -434,7 +477,7 @@ namespace FRA_IMP
         private void CopyDataTableToClipboard()
         {
             logService.Debug("Copy dataTable to clipboard");
-            Clipboard.SetText(m_Files.DataTables);
+            Clipboard.SetText(m_Files.DataTableExcel);
         }
 
         private void SaveDataTableAs()
@@ -451,7 +494,7 @@ namespace FRA_IMP
                     CurrentSettings.Instance.PathLastDataTableFile = dialog.FileName;
                     logService.Info("Saving datatable file: " + dialog.FileName);
                     StreamWriter file = new StreamWriter(dialog.FileName);
-                    file.Write(m_Files.DataTables);
+                    file.Write(m_Files.DataTableExcel);
                 }
             }
         }
@@ -485,24 +528,26 @@ namespace FRA_IMP
 
         private void UpdateCharts(FRAFile file, FRAFileChange change)
         {
+            logService.Debug("starting updating charts");
             UpdateGainPhaseChart(file, change);
             UpdateImpedanceChart(file, change);
             UpdateCapacitanceChart(file, change);
             UpdateInductanceChart(file, change);
+            logService.Debug("updating charts finished");
         }
 
         private void UpdateGainPhaseChart(FRAFile file, FRAFileChange change)
         {
             if (change == FRAFileChange.FileAdded)
             {
-                logService.Debug("File added to chart:" + file.FileName);
+                logService.Debug("File added to gain phase chart:" + file.FileName);
                 chartGainPhase.Series.Add(file.GainDBSeries);
                 chartGainPhase.Series.Add(file.PhaseDegreesSeries);
             }
 
             if (change == FRAFileChange.FileDeteted)
             {
-                logService.Debug("File deleted from chart:" + file.FileName);
+                logService.Debug("File deleted from gain phase chart:" + file.FileName);
                 chartGainPhase.Series.Remove(file.GainDBSeries);
                 chartGainPhase.Series.Remove(file.PhaseDegreesSeries);
             }
@@ -548,14 +593,14 @@ namespace FRA_IMP
         {
             if (change == FRAFileChange.FileAdded && file.ReferenceResistorOhms != 0) // files without ref resistor do not have usefull RLC properties
             {
-                logService.Debug("File added to chart:" + file.FileName);
+                logService.Debug("File added to impedance chart:" + file.FileName);
                 chartImpedance.Series.Add(file.DUTImpedanceMilliOhmSeries);
                 chartImpedance.Series.Add(file.DUTPhaseDegreesSeries);
             }
 
             if (change == FRAFileChange.FileDeteted)
             {
-                logService.Debug("File deleted from chart:" + file.FileName);
+                logService.Debug("File deleted from impendance chart:" + file.FileName);
                 chartImpedance.Series.Remove(file.DUTImpedanceMilliOhmSeries);
                 chartImpedance.Series.Remove(file.DUTPhaseDegreesSeries);
             }
@@ -601,14 +646,14 @@ namespace FRA_IMP
         {
             if (change == FRAFileChange.FileAdded && file.ReferenceResistorOhms != 0) // files without ref resistor do not have usefull RLC properties
             {
-                logService.Debug("File added to chart:" + file.FileName);
+                logService.Debug("File added to capacitance chart:" + file.FileName);
                 chartCapacitance.Series.Add(file.DUTCapacitancePifoFaradSeries);
                 chartCapacitance.Series.Add(file.DUT_ESRMilliOhmSeries);
             }
 
             if (change == FRAFileChange.FileDeteted)
             {
-                logService.Debug("File deleted from chart:" + file.FileName);
+                logService.Debug("File deleted from capacintance chart:" + file.FileName);
                 chartCapacitance.Series.Remove(file.DUTCapacitancePifoFaradSeries);
                 chartCapacitance.Series.Remove(file.DUT_ESRMilliOhmSeries);
             }
@@ -654,13 +699,14 @@ namespace FRA_IMP
         {
             if (change == FRAFileChange.FileAdded && file.ReferenceResistorOhms != 0) // files without ref resistor do not have usefull RLC properties
             {
-                logService.Info("File added to chart:" + file.FileName);
+                logService.Info("File added to inductance chart:" + file.FileName);
                 chartInductance.Series.Add(file.DUTInductanceNanoHenrySeries);
                 chartInductance.Series.Add(file.DUT_ESRMilliOhmSeries);
             }
 
             if (change == FRAFileChange.FileDeteted)
             {
+                logService.Debug("File deleted from inductance chart:" + file.FileName);
                 chartInductance.Series.Remove(file.DUTInductanceNanoHenrySeries);
                 chartInductance.Series.Remove(file.DUT_ESRMilliOhmSeries);
             }
@@ -806,111 +852,114 @@ namespace FRA_IMP
         }
         private void ChartZoom(Chart chart, MouseEventArgs e, ref int zoomX, ref int zoomY, ref int zoomY2)
         {
-            double zoomFactor = 0.2;   //0 to 1 = 0% to 100% Every Wheel Tick.
-
-            Axis xAxis = chart.ChartAreas[0].AxisX;
-            Axis yAxis = chart.ChartAreas[0].AxisY;
-            Axis y2Axis = chart.ChartAreas[0].AxisY2;
-
-            // reset zoom count when user has reset zoom on scroll bars
-            if (!xAxis.ScaleView.IsZoomed) zoomX = 0;
-            if (!yAxis.ScaleView.IsZoomed) zoomY = 0;
-            if (!y2Axis.ScaleView.IsZoomed) zoomY2 = 0;
-
-            double mousePointerPosX = xAxis.PixelPositionToValue(e.Location.X);
-            double mousePointerPosY = yAxis.PixelPositionToValue(e.Location.Y);
-            double mousePointerPosY2 = y2Axis.PixelPositionToValue(e.Location.Y);
-
-            double currentXMin = xAxis.ScaleView.ViewMinimum;
-            double currentXMax = xAxis.ScaleView.ViewMaximum;
-            double currentYMin = yAxis.ScaleView.ViewMinimum;
-            double currentYMax = yAxis.ScaleView.ViewMaximum;
-            double currentY2Min = y2Axis.ScaleView.ViewMinimum;
-            double currentY2Max = y2Axis.ScaleView.ViewMaximum;
-
-            try
+            if (e.Location.X >=0 && e.Location.Y>=0)
             {
-                if (e.Delta < 0) // => ZOOM IN
+                double zoomFactor = 0.2;   //0 to 1 = 0% to 100% Every Wheel Tick.
+
+                Axis xAxis = chart.ChartAreas[0].AxisX;
+                Axis yAxis = chart.ChartAreas[0].AxisY;
+                Axis y2Axis = chart.ChartAreas[0].AxisY2;
+
+                // reset zoom count when user has reset zoom on scroll bars
+                if (!xAxis.ScaleView.IsZoomed) zoomX = 0;
+                if (!yAxis.ScaleView.IsZoomed) zoomY = 0;
+                if (!y2Axis.ScaleView.IsZoomed) zoomY2 = 0;
+
+                double mousePointerPosX = xAxis.PixelPositionToValue(e.Location.X);
+                double mousePointerPosY = yAxis.PixelPositionToValue(e.Location.Y);
+                double mousePointerPosY2 = y2Axis.PixelPositionToValue(e.Location.Y);
+
+                double currentXMin = xAxis.ScaleView.ViewMinimum;
+                double currentXMax = xAxis.ScaleView.ViewMaximum;
+                double currentYMin = yAxis.ScaleView.ViewMinimum;
+                double currentYMax = yAxis.ScaleView.ViewMaximum;
+                double currentY2Min = y2Axis.ScaleView.ViewMinimum;
+                double currentY2Max = y2Axis.ScaleView.ViewMaximum;
+
+                try
                 {
-                    if (Control.ModifierKeys != Keys.Shift && Control.ModifierKeys != Keys.Control) // zoom out X-axis
+                    if (e.Delta < 0) // => ZOOM IN
                     {
-                        if (zoomX > 1)
+                        if (Control.ModifierKeys != Keys.Shift && Control.ModifierKeys != Keys.Control) // zoom out X-axis
                         {
-                            double newXMin = currentXMin - ((mousePointerPosX - currentXMin) * zoomFactor);
-                            double newXMax = currentXMax + ((currentXMax - mousePointerPosX) * zoomFactor);
+                            if (zoomX > 1)
+                            {
+                                double newXMin = currentXMin - ((mousePointerPosX - currentXMin) * zoomFactor);
+                                double newXMax = currentXMax + ((currentXMax - mousePointerPosX) * zoomFactor);
+                                xAxis.ScaleView.Zoom(newXMin, newXMax);
+                                zoomX -= 1;
+                            }
+                            else // reset zoom to remove scroll bars
+                            {
+                                xAxis.ScaleView.ZoomReset();
+                                zoomX = 0;
+                            }
+                        }
+
+                        if (Control.ModifierKeys != Keys.Shift && Control.ModifierKeys == Keys.Control) // zoom out Y1
+                        {
+                            if (zoomY >= 1) // zoom out Y-axis
+                            {
+                                double newYMin = currentYMin - ((mousePointerPosY - currentYMin) * zoomFactor);
+                                double newYMax = currentYMax + ((currentYMax - mousePointerPosY) * zoomFactor);
+                                yAxis.ScaleView.Zoom(newYMin, newYMax);
+                                zoomY -= 1;
+                            }
+                            else // reset zoom to remove scroll bars
+                            {
+                                yAxis.ScaleView.ZoomReset();
+                                zoomY = 0;
+                            }
+                        }
+
+                        if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys != Keys.Control) // zoom out Y2-axis
+                        {
+                            if (zoomY2 >= 1) // zoom out Y2-axis
+                            {
+                                double newY2Min = currentY2Min - ((mousePointerPosY2 - currentY2Min) * zoomFactor);
+                                double newY2Max = currentY2Max + ((currentY2Max - mousePointerPosY2) * zoomFactor);
+                                y2Axis.ScaleView.Zoom(newY2Min, newY2Max);
+                                zoomY2 -= 1;
+                            }
+                            else // reset zoom to remove scroll bars
+                            {
+                                y2Axis.ScaleView.ZoomReset();
+                                zoomY2 = 0;
+                            }
+                        }
+                    }
+
+                    if (e.Delta > 0) // => ZOOM OUT
+                    {
+                        if (Control.ModifierKeys != Keys.Shift && Control.ModifierKeys != Keys.Control) // zoom in X-axis
+                        {
+                            double newXMin = currentXMin + ((mousePointerPosX - currentXMin) * zoomFactor);
+                            double newXMax = currentXMax - ((currentXMax - mousePointerPosX) * zoomFactor);
                             xAxis.ScaleView.Zoom(newXMin, newXMax);
-                            zoomX -= 1;
+                            zoomX += 1;
                         }
-                        else // reset zoom to remove scroll bars
-                        {
-                            xAxis.ScaleView.ZoomReset();
-                            zoomX = 0;
-                        }
-                    }
 
-                    if (Control.ModifierKeys != Keys.Shift && Control.ModifierKeys == Keys.Control) // zoom out Y1
-                    {
-                        if (zoomY >= 1) // zoom out Y-axis
+                        if (Control.ModifierKeys != Keys.Shift && Control.ModifierKeys == Keys.Control) // zoom in Y-axis
                         {
-                            double newYMin = currentYMin - ((mousePointerPosY - currentYMin) * zoomFactor);
-                            double newYMax = currentYMax + ((currentYMax - mousePointerPosY) * zoomFactor);
+                            double newYMin = currentYMin + ((mousePointerPosY - currentYMin) * zoomFactor);
+                            double newYMax = currentYMax - ((currentYMax - mousePointerPosY) * zoomFactor);
                             yAxis.ScaleView.Zoom(newYMin, newYMax);
-                            zoomY -= 1;
+                            zoomY += 1;
                         }
-                        else // reset zoom to remove scroll bars
-                        {
-                            yAxis.ScaleView.ZoomReset();
-                            zoomY = 0;
-                        }
-                    }
 
-                    if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys != Keys.Control) // zoom out Y2-axis
-                    {
-                        if (zoomY2 >= 1) // zoom out Y2-axis
+                        if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys != Keys.Control) // zoom in Y2-axis
                         {
-                            double newY2Min = currentY2Min - ((mousePointerPosY2 - currentY2Min) * zoomFactor);
-                            double newY2Max = currentY2Max + ((currentY2Max - mousePointerPosY2) * zoomFactor);
+                            double newY2Min = currentY2Min + ((mousePointerPosY2 - currentY2Min) * zoomFactor);
+                            double newY2Max = currentY2Max - ((currentY2Max - mousePointerPosY2) * zoomFactor);
                             y2Axis.ScaleView.Zoom(newY2Min, newY2Max);
-                            zoomY2 -= 1;
-                        }
-                        else // reset zoom to remove scroll bars
-                        {
-                            y2Axis.ScaleView.ZoomReset();
-                            zoomY2 = 0;
+                            zoomY2 += 1;
                         }
                     }
                 }
-
-                if (e.Delta > 0) // => ZOOM OUT
+                catch (Exception ex)
                 {
-                    if (Control.ModifierKeys != Keys.Shift && Control.ModifierKeys != Keys.Control) // zoom in X-axis
-                    {
-                        double newXMin = currentXMin + ((mousePointerPosX - currentXMin) * zoomFactor);
-                        double newXMax = currentXMax - ((currentXMax - mousePointerPosX) * zoomFactor);
-                        xAxis.ScaleView.Zoom(newXMin, newXMax);
-                        zoomX += 1;
-                    }
-
-                    if (Control.ModifierKeys != Keys.Shift && Control.ModifierKeys == Keys.Control) // zoom in Y-axis
-                    {
-                        double newYMin = currentYMin + ((mousePointerPosY - currentYMin) * zoomFactor);
-                        double newYMax = currentYMax - ((currentYMax - mousePointerPosY) * zoomFactor);
-                        yAxis.ScaleView.Zoom(newYMin, newYMax);
-                        zoomY += 1;
-                    }
-
-                    if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys != Keys.Control) // zoom in Y2-axis
-                    {
-                        double newY2Min = currentY2Min + ((mousePointerPosY2 - currentY2Min) * zoomFactor);
-                        double newY2Max = currentY2Max - ((currentY2Max - mousePointerPosY2) * zoomFactor);
-                        y2Axis.ScaleView.Zoom(newY2Min, newY2Max);
-                        zoomY2 += 1;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                logService.Fatal("zooming failed:" + ex.ToString());
+                    logService.Fatal("zooming failed:" + ex.ToString());
+                } 
             }
         }
 
@@ -931,7 +980,7 @@ namespace FRA_IMP
             {
                 LegendClick(chartImpedance, sender, e);
 
-                if (e.Button == MouseButtons.Right) contextMenuStripRightClick.Show(this, new Point(e.X, e.Y));//places the menu 
+                if (e.Button == MouseButtons.Right) ShowRightClickContextMenu(e.X, e.Y);
 
                 if (e.Button == MouseButtons.Left) ChartImpedance_MouseMove(sender, e);
             }
@@ -942,7 +991,7 @@ namespace FRA_IMP
             {
                 LegendClick(chartCapacitance, sender, e);
 
-                if (e.Button == MouseButtons.Right) contextMenuStripRightClick.Show(this, new Point(e.X, e.Y));//places the menu 
+                if (e.Button == MouseButtons.Right) ShowRightClickContextMenu(e.X, e.Y);
 
                 if (e.Button == MouseButtons.Left) ChartCapacitance_MouseMove(sender, e);
             }
@@ -953,7 +1002,7 @@ namespace FRA_IMP
             {
                 LegendClick(chartInductance, sender, e);
 
-                if (e.Button == MouseButtons.Right) contextMenuStripRightClick.Show(this, new Point(e.X, e.Y));//places the menu 
+                if (e.Button == MouseButtons.Right) ShowRightClickContextMenu(e.X, e.Y);
 
                 if (e.Button == MouseButtons.Left) ChartInductance_MouseMove(sender, e);
             }
@@ -1108,45 +1157,61 @@ namespace FRA_IMP
             else { chartInductance.ChartAreas[0].CursorY.SetCursorPosition(double.MaxValue); } // hide cursor
         }
 
-        private void ChartGainPhase_MouseLeave(object sender, EventArgs e)
-        {
-            if (chartGainPhase.Focused)
-                chartGainPhase.Parent.Focus();
-        }
         private void ChartGainPhase_MouseEnter(object sender, EventArgs e) // chart needs to be focussed for the Mousewheel events to fire
         {
-            if (!chartGainPhase.Focused)
+            if (mainFormActive && !chartGainPhase.Focused)
                 chartGainPhase.Focus();
         }
-        private void ChartImpedance_MouseLeave(object sender, EventArgs e)
-        {
-            if (chartImpedance.Focused)
-                chartImpedance.Parent.Focus();
-        }
+
         private void ChartImpedance_MouseEnter(object sender, EventArgs e) // chart needs to be focussed for the Mousewheel events to fire
         {
-            if (!chartImpedance.Focused)
+            if (mainFormActive && !chartImpedance.Focused)
                 chartImpedance.Focus();
         }
-        private void ChartCapacitance_MouseLeave(object sender, EventArgs e)
-        {
-            if (chartCapacitance.Focused)
-                chartCapacitance.Parent.Focus();
-        }
+
         private void ChartCapacitance_MouseEnter(object sender, EventArgs e) // chart needs to be focussed for the Mousewheel events to fire
         {
-            if (!chartCapacitance.Focused)
+            if (mainFormActive && !chartCapacitance.Focused)
                 chartCapacitance.Focus();
         }
-        private void ChartInductance_MouseLeave(object sender, EventArgs e)
-        {
-            if (chartInductance.Focused)
-                chartInductance.Parent.Focus();
-        }
+
         private void ChartInductance_MouseEnter(object sender, EventArgs e) // chart needs to be focussed for the Mousewheel events to fire
         {
-            if (!chartInductance.Focused)
+            if (mainFormActive && !chartInductance.Focused)
                 chartInductance.Focus();
+        }
+
+        private void FormMain_Activated(object sender, EventArgs e)
+        {
+            mainFormActive = true;
+        }
+
+        private void FormMain_Deactivate(object sender, EventArgs e)
+        {
+            mainFormActive = false;
+        }
+
+        private void saveFRAFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (m_LegendItem != null)
+            {
+                logService.Debug("Save file as: " + m_LegendItem.SeriesName);
+                Series serie = GetDisplayedChart().Series[m_LegendItem.SeriesName];
+                FRAFile file = (FRAFile)serie.Tag;
+
+                logService.Debug("Save file as: " + m_LegendItem.SeriesName + "  (" + file.FRAFileType.ToString() + ")");
+
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.InitialDirectory = CurrentSettings.Instance.PathLastMeasurementFile;
+                dialog.Filter = "CSV File (*.csv)|*.csv";
+                dialog.Title = "Save file as";
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    CurrentSettings.Instance.PathLastMeasurementFile = dialog.FileName;
+                    logService.Info("Saving file: " + dialog.FileName);
+                    file.SaveAs(FRAFileType.FRA4PicoScope, dialog.FileName);
+                }
+            }
         }
 
         private void ChartGainPhase_KeyDown(object sender, KeyEventArgs e)

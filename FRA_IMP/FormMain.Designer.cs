@@ -35,9 +35,11 @@
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fRA4PicoScopeFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.keysightFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rhodeSwToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fRA4PicoScopeFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.keysightFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.rhodeSchwarzFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.copyImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveImageAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,6 +49,8 @@
             this.printChartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.measureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.picoscopeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shortcutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testSetupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,6 +82,8 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveFRAFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartGainPhase)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -96,6 +102,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.measureToolStripMenuItem,
             this.infoToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -125,7 +132,8 @@
             // 
             this.newToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fRA4PicoScopeFileToolStripMenuItem,
-            this.keysightFileToolStripMenuItem});
+            this.keysightFileToolStripMenuItem,
+            this.rhodeSwToolStripMenuItem});
             this.newToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.open;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
@@ -135,7 +143,7 @@
             // 
             this.fRA4PicoScopeFileToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.Picoscope;
             this.fRA4PicoScopeFileToolStripMenuItem.Name = "fRA4PicoScopeFileToolStripMenuItem";
-            this.fRA4PicoScopeFileToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.fRA4PicoScopeFileToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.fRA4PicoScopeFileToolStripMenuItem.Text = "FRA4PicoScope File";
             this.fRA4PicoScopeFileToolStripMenuItem.Click += new System.EventHandler(this.fRA4PicoScopeFileToolStripMenuItem_Click);
             // 
@@ -143,26 +151,35 @@
             // 
             this.keysightFileToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.keysight;
             this.keysightFileToolStripMenuItem.Name = "keysightFileToolStripMenuItem";
-            this.keysightFileToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.keysightFileToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.keysightFileToolStripMenuItem.Text = "Keysight File";
             this.keysightFileToolStripMenuItem.Click += new System.EventHandler(this.keysightFileToolStripMenuItem_Click);
+            // 
+            // rhodeSwToolStripMenuItem
+            // 
+            this.rhodeSwToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.R_S;
+            this.rhodeSwToolStripMenuItem.Name = "rhodeSwToolStripMenuItem";
+            this.rhodeSwToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.rhodeSwToolStripMenuItem.Text = "Rhode & Schwarz File";
+            this.rhodeSwToolStripMenuItem.Click += new System.EventHandler(this.rhodeSwToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fRA4PicoScopeFileToolStripMenuItem1,
-            this.keysightFileToolStripMenuItem1});
+            this.keysightFileToolStripMenuItem1,
+            this.rhodeSchwarzFileToolStripMenuItem});
             this.openToolStripMenuItem.Enabled = false;
             this.openToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.open;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Text = "Add";
             // 
             // fRA4PicoScopeFileToolStripMenuItem1
             // 
             this.fRA4PicoScopeFileToolStripMenuItem1.Image = global::FRA_IMP.Properties.Resources.Picoscope;
             this.fRA4PicoScopeFileToolStripMenuItem1.Name = "fRA4PicoScopeFileToolStripMenuItem1";
-            this.fRA4PicoScopeFileToolStripMenuItem1.Size = new System.Drawing.Size(177, 22);
+            this.fRA4PicoScopeFileToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
             this.fRA4PicoScopeFileToolStripMenuItem1.Text = "FRA4PicoScope File";
             this.fRA4PicoScopeFileToolStripMenuItem1.Click += new System.EventHandler(this.fRA4PicoScopeFileToolStripMenuItem1_Click);
             // 
@@ -170,9 +187,17 @@
             // 
             this.keysightFileToolStripMenuItem1.Image = global::FRA_IMP.Properties.Resources.keysight;
             this.keysightFileToolStripMenuItem1.Name = "keysightFileToolStripMenuItem1";
-            this.keysightFileToolStripMenuItem1.Size = new System.Drawing.Size(177, 22);
+            this.keysightFileToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
             this.keysightFileToolStripMenuItem1.Text = "Keysight File";
             this.keysightFileToolStripMenuItem1.Click += new System.EventHandler(this.keysightFileToolStripMenuItem1_Click);
+            // 
+            // rhodeSchwarzFileToolStripMenuItem
+            // 
+            this.rhodeSchwarzFileToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.R_S;
+            this.rhodeSchwarzFileToolStripMenuItem.Name = "rhodeSchwarzFileToolStripMenuItem";
+            this.rhodeSchwarzFileToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.rhodeSchwarzFileToolStripMenuItem.Text = "Rhode & Schwarz File";
+            this.rhodeSchwarzFileToolStripMenuItem.Click += new System.EventHandler(this.rhodeSchwarzFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -243,6 +268,22 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // measureToolStripMenuItem
+            // 
+            this.measureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.picoscopeToolStripMenuItem});
+            this.measureToolStripMenuItem.Name = "measureToolStripMenuItem";
+            this.measureToolStripMenuItem.Size = new System.Drawing.Size(64, 20);
+            this.measureToolStripMenuItem.Text = "Measure";
+            // 
+            // picoscopeToolStripMenuItem
+            // 
+            this.picoscopeToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.Picoscope;
+            this.picoscopeToolStripMenuItem.Name = "picoscopeToolStripMenuItem";
+            this.picoscopeToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.picoscopeToolStripMenuItem.Text = "Picoscope";
+            this.picoscopeToolStripMenuItem.Click += new System.EventHandler(this.picoscopeToolStripMenuItem_Click);
+            // 
             // infoToolStripMenuItem
             // 
             this.infoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -312,7 +353,7 @@
             this.tabPageGainPhase.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageGainPhase.Size = new System.Drawing.Size(792, 400);
             this.tabPageGainPhase.TabIndex = 0;
-            this.tabPageGainPhase.Text = "GainPhase FRA";
+            this.tabPageGainPhase.Text = "GainPhase";
             this.tabPageGainPhase.UseVisualStyleBackColor = true;
             // 
             // tabPageImpedance
@@ -477,9 +518,11 @@
             this.changeLineWidhToolStripMenuItem,
             this.toolStripSeparator3,
             this.propertiesToolStripMenuItem,
-            this.removeSeriesToolStripMenuItem});
+            this.removeSeriesToolStripMenuItem,
+            this.toolStripSeparator9,
+            this.saveFRAFileToolStripMenuItem});
             this.contextMenuStripLegendClick.Name = "contextMenuStripLegendClick";
-            this.contextMenuStripLegendClick.Size = new System.Drawing.Size(198, 98);
+            this.contextMenuStripLegendClick.Size = new System.Drawing.Size(198, 126);
             // 
             // changeColourToolStripMenuItem
             // 
@@ -518,6 +561,19 @@
             this.removeSeriesToolStripMenuItem.Text = "Remove File from chart";
             this.removeSeriesToolStripMenuItem.Click += new System.EventHandler(this.removeSeriesToolStripMenuItem_Click);
             // 
+            // saveFRAFileToolStripMenuItem
+            // 
+            this.saveFRAFileToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.SaveAs;
+            this.saveFRAFileToolStripMenuItem.Name = "saveFRAFileToolStripMenuItem";
+            this.saveFRAFileToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.saveFRAFileToolStripMenuItem.Text = "Save FRA File As...";
+            this.saveFRAFileToolStripMenuItem.Click += new System.EventHandler(this.saveFRAFileToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(194, 6);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -528,7 +584,9 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormMain";
-            this.Text = "FRAImpedance";
+            this.Text = "FRA Impedance Viewer & Recorder";
+            this.Activated += new System.EventHandler(this.FormMain_Activated);
+            this.Deactivate += new System.EventHandler(this.FormMain_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -598,6 +656,12 @@
         private System.Windows.Forms.ToolStripMenuItem legendInChartToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rhodeSwToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rhodeSchwarzFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem measureToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem picoscopeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+        private System.Windows.Forms.ToolStripMenuItem saveFRAFileToolStripMenuItem;
     }
 }
 

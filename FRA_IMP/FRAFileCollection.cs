@@ -40,12 +40,12 @@ namespace FRA_IMP
                 m_Files.Add(item);
                 NotifyCollectionChanged(item, FRAFileChange.FileAdded);
             }
-            else throw new Exception("Files with identical Series Path is already added in the collection");         
+            else throw new Exception("Files with identical Series Path is already added in the collection");
         }
 
         public void Clear()
         {
-            while(m_Files.Count!=0) this.Remove(m_Files[0]);        
+            while (m_Files.Count != 0) this.Remove(m_Files[0]);
         }
 
         public bool Contains(FRAFile item)
@@ -66,7 +66,7 @@ namespace FRA_IMP
         public bool Remove(FRAFile item)
         {
             if (m_Files.Contains(item))
-            {            
+            {
                 m_Files.Remove(item);
                 NotifyCollectionChanged(item, FRAFileChange.FileDeteted);
                 return true;
@@ -454,12 +454,16 @@ namespace FRA_IMP
             }
         }
 
-        public string DataTables
+        public string DataTableExcel
         {
             get
             {
                 StringWriter writer = new StringWriter();
-                foreach (FRAFile file in m_Files) writer.WriteLine(file.GetDataTable());
+                foreach (FRAFile file in m_Files)
+                {
+                    writer.WriteLine(file.FileName);
+                    writer.WriteLine(file.GetDataTable(FRATableFormat.Excel_ALL));
+                }
                 return writer.ToString();
             }
         }
@@ -523,6 +527,7 @@ namespace FRA_IMP
 
         public bool ContainsFile(string path)
         {
+            if (path == "") return false; //unsaved files from measurents are always new
             bool result = false;
             foreach (FRAFile file in m_Files) if (file.FilePath.Equals(path)) result = true;
             return result;

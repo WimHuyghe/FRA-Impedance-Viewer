@@ -115,6 +115,11 @@ namespace FRA_IMP
             get { return m_FrequencyHz; }
         }
 
+        public double FrequencyLogHz
+        {
+            get { return Math.Log10(m_FrequencyHz); }
+        }
+
         private double m_GainFRA_DB;
         public double GainFRA_DB
         {
@@ -200,17 +205,43 @@ namespace FRA_IMP
             return this.FrequencyHz.CompareTo(comparer.FrequencyHz);
         }
 
-        public string ToStringValues()
+        public string ToStringValues(FRATableFormat tableFormat)
         {
-            return FrequencyHz.ToString() + "\t" + GainFRA_DB.ToString() + "\t" + PhaseDegrees.ToString() + "\t" +
-                DUTImpedanceMilliOhms.ToString() + "\t" + DUTCapacitancePicoFarad.ToString() + "\t" +
-                DUTInductanceNanoHenry.ToString() + "\t" + DUT_ESR_MilliOhms.ToString() + "\t" + DUT_QCapacitor.ToString() + "\t" + DUT_QInductor.ToString();
+            switch (tableFormat)
+            {
+                case FRATableFormat.CSV_FRA4PicoScope:
+                    return FrequencyLogHz.ToString(CultureInfo.InvariantCulture) + "," + GainFRA_DB.ToString(CultureInfo.InvariantCulture) + "," + PhaseDegrees.ToString(CultureInfo.InvariantCulture);
+                case FRATableFormat.CSV_Keysight:
+                    throw new NotImplementedException("TODO Keysight Formatting"); // currently also not used for saving 
+                case FRATableFormat.CSV_RhodeSchwarz:
+                    throw new NotImplementedException("TODO RhodeSchwarz Formatting"); // currently also not used for saving
+                case FRATableFormat.Excel_ALL:
+                    return FrequencyHz.ToString()+ "\t" + GainFRA_DB.ToString() + "\t" + PhaseDegrees.ToString() + "\t" +
+                   DUTImpedanceMilliOhms.ToString() + "\t" + DUTCapacitancePicoFarad.ToString() + "\t" +
+                   DUTInductanceNanoHenry.ToString() + "\t" + DUT_ESR_MilliOhms.ToString() + "\t" + DUT_QCapacitor.ToString() + "\t" + DUT_QInductor.ToString();
+                default:
+                    return "";
+            }
         }
 
-        public static string ToStringTitles()
+        public static string ToStringTitles(FRATableFormat tableFormat)
         {
-            return "Frequency(Hz)" + "\t" + "Gain(dB)" + "\t" + "Phase(°)" + "\t" + "Impedance(MilliOhms)" + "\t" + 
+            switch (tableFormat)
+            {
+                case FRATableFormat.CSV_FRA4PicoScope:
+                    return "Frequency Log(Hz), Gain(dB), Phase(deg)";
+
+                case FRATableFormat.CSV_RhodeSchwarz:
+                    return "in Sa,Frequency in Hz,Gain in dB,Phase in °,Amplitude in Vpp";
+
+                case FRATableFormat.CSV_Keysight:
+                    return "#, Frequency (Hz), Amplitude (Vpp), Gain (dB), Phase (°)";
+                case FRATableFormat.Excel_ALL:
+                    return "Frequency(Hz)" + "\t" + "Gain(dB)" + "\t" + "Phase(°)" + "\t" + "Impedance(MilliOhms)" + "\t" +
                 "Capacitance(pF)" + "\t" + "Inductance(nH)" + "\t" + "ESR(MilliOhms)" + "\t" + "Q(Capacitor)" + "\t" + "Q(Inductor)";
+                default:
+                    return "";
+            }
         }
     }
 }

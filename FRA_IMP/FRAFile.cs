@@ -25,19 +25,38 @@ namespace FRA_IMP
         private double m_MaxDUT_ESR_Ohms = Double.MinValue, m_MinDUT_ESR_Ohms = Double.MaxValue;
         private double m_MaxDUTInductanceNanoHenry = Double.MinValue, m_MinDUTInductanceNanoHenry = Double.MaxValue;
 
-        public FRAFile(string fileName, FRAFileType fileType, double referenceResistor)
+        public FRAFile(string path, FRAFileType fileType, double referenceResistor)
         {
             logService = new FileLogService(typeof(FRAFile));
-            logService.Debug("Creating FRASeries from file " + fileName);
+            logService.Debug("Creating FRASeries from file " + path);
             m_FRAResults = new List<FRAResult>();
-            m_FilePath = fileName;
+            m_FilePath = path;
             m_ReferenceResistor = referenceResistor;
             m_FRAFileType = fileType;
+            m_DateTimeCreated = DateTime.Now;
             AddResults();
             CreateLineSeries();
         }
 
+        public FRAFile(FRAFileType fileType, double[] frequenciesLogHz, double[] gainsDB, double[] phasesDegrees, double referenceResistorOhms)
+        {
+            logService = new FileLogService(typeof(FRAFile));
+            logService.Debug("Creating FRASeries from arrays ");
+            m_FRAResults = new List<FRAResult>();
+            m_FilePath = "";
+            m_ReferenceResistor = referenceResistorOhms;
+            m_FRAFileType = fileType;
+            m_DateTimeCreated = DateTime.Now;
+            AddResults(frequenciesLogHz, gainsDB, phasesDegrees);
+            CreateLineSeries();
+        }
+
         #region Result Collection 
+
+        private void AddResults(double[] frequencyHz, double[] gainDB, double[] phaseDegrees)
+        {
+            for (int i = 0; i < frequencyHz.Length; i++) AddResult(new FRAResult(Math.Pow(10, frequencyHz[i]), gainDB[i], phaseDegrees[i], ReferenceResistorOhms));
+        }
 
         private void AddResults()
         {
@@ -50,6 +69,7 @@ namespace FRA_IMP
                 int firstRows = 0;
                 if (FRAFileType == FRAFileType.FRA4PicoScope) firstRows = 1;
                 if (FRAFileType == FRAFileType.Keysight) firstRows = 1;
+                if (FRAFileType == FRAFileType.RhodeSchwarz) firstRows = 1;
                 while (firstRows != 0)
                 {
                     parser.ReadFields();
@@ -66,15 +86,19 @@ namespace FRA_IMP
 
                     CultureInfo culturFRA4PicoScope = CultureInfo.InvariantCulture;
                     CultureInfo culturKeysight = CultureInfo.InvariantCulture;
+                    CultureInfo culturRhodeSwchwarz = CultureInfo.InvariantCulture;
                     double frequencyHz = 0;
-                    if (FRAFileType == FRAFileType.FRA4PicoScope) frequencyHz = Math.Pow(10,Convert.ToDouble(fields[0], culturFRA4PicoScope));
-                    if (FRAFileType == FRAFileType.Keysight) frequencyHz =Convert.ToDouble(fields[1], culturKeysight);
+                    if (FRAFileType == FRAFileType.FRA4PicoScope) frequencyHz = Math.Pow(10, Convert.ToDouble(fields[0], culturFRA4PicoScope));
+                    if (FRAFileType == FRAFileType.Keysight) frequencyHz = Convert.ToDouble(fields[1], culturKeysight);
+                    if (FRAFileType == FRAFileType.RhodeSchwarz) frequencyHz = Convert.ToDouble(fields[1], culturRhodeSwchwarz);
                     double gainDB = 0;
                     if (FRAFileType == FRAFileType.FRA4PicoScope) gainDB = Convert.ToDouble(fields[1], culturFRA4PicoScope);
                     if (FRAFileType == FRAFileType.Keysight) gainDB = Convert.ToDouble(fields[3], culturKeysight);
+                    if (FRAFileType == FRAFileType.RhodeSchwarz) gainDB = Convert.ToDouble(fields[2], culturRhodeSwchwarz);
                     double phaseDegrees = 0;
                     if (FRAFileType == FRAFileType.FRA4PicoScope) phaseDegrees = Convert.ToDouble(fields[2], culturFRA4PicoScope);
                     if (FRAFileType == FRAFileType.Keysight) phaseDegrees = Convert.ToDouble(fields[4], culturKeysight);
+                    if (FRAFileType == FRAFileType.RhodeSchwarz) phaseDegrees = Convert.ToDouble(fields[3], culturRhodeSwchwarz);
 
                     AddResult(new FRAResult(frequencyHz, gainDB, phaseDegrees, ReferenceResistorOhms));
                 }
@@ -322,7 +346,52 @@ namespace FRA_IMP
 
         public string FileName
         {
-            get { return Path.GetFileNameWithoutExtension(FilePath); ; }
+            get
+            {
+                if (string.IsNullOrEmpty(FilePath)) return DateTime.Now.ToString();
+                else return Path.GetFileNameWithoutExtension(FilePath);
+            }
+        }
+
+        private DateTime m_DateTimeCreated;
+        public DateTime DateTimeCreated
+        {
+            get { return m_DateTimeCreated; }
+        }
+
+        public void SaveAs(FRAFileType fileType, string path)
+        {
+            switch (fileType)
+            {
+                case FRAFileType.FRA4PicoScope:
+                    WriteFile(path, FRATableFormat.CSV_FRA4PicoScope);
+                    m_FilePath = path;
+                    UpdateSerieNames();
+                    break;
+                case FRAFileType.Keysight:
+                    WriteFile(path, FRATableFormat.CSV_Keysight);
+                    m_FilePath = path;
+                    UpdateSerieNames();
+                    break;
+                case FRAFileType.RhodeSchwarz:
+                    WriteFile(path, FRATableFormat.CSV_RhodeSchwarz);
+                    m_FilePath = path;
+                    UpdateSerieNames();
+                    break;
+                default:
+                    logService.Warn("No file could be created for fileType" + fileType.ToString());
+                    break;
+            }
+        }
+
+        private void WriteFile(string path, FRATableFormat tableFormat)
+        {
+            using (StreamWriter wr = new StreamWriter(path))
+            {
+                wr.AutoFlush = true;
+                wr.WriteLine(FRAResult.ToStringTitles(tableFormat));
+                foreach (FRAResult result in m_FRAResults) wr.WriteLine(result.ToStringValues(tableFormat));
+            }
         }
 
         public double MinFrequencyHz
@@ -622,7 +691,7 @@ namespace FRA_IMP
             m_DUTImpedanceMilliOhmSeries = CreateLineSerie("Impedance", AxisType.Primary);
             m_DUTPhaseDegreesSeries = CreateLineSerie("Phase", AxisType.Secondary);
             m_DUTCapacitancePicoFaredSeries = CreateLineSerie("Capacitance", AxisType.Primary);
-            m_DUT_ESRMilliOhmSeries = CreateLineSerie("ESR: ", AxisType.Secondary);
+            m_DUT_ESRMilliOhmSeries = CreateLineSerie("ESR", AxisType.Secondary);
             m_DUTInductanceNanoHenrySeries = CreateLineSerie("Inductance", AxisType.Primary);
 
             foreach (FRAResult result in m_FRAResults) // add results
@@ -646,41 +715,72 @@ namespace FRA_IMP
             m_DUTInductanceNanoHenrySeries.MarkerStep = m_DUTInductanceNanoHenrySeries.Points.Count / numberOfMarkers + 1;
         }
 
+        private string GetSeriesName(string name)
+        {
+            return Guid.NewGuid().ToString();
+
+            //if (string.IsNullOrEmpty(FilePath)) return  name + " : " + DateTimeCreated.ToString();
+            //else return name + " : " + FilePath;
+        }
+
+        private string GetLegendName(string name)
+        {
+            return name + " : " + this.FileName;
+        }
+
+        private void UpdateSeriesNaming(string name, Series serie)
+        {
+            serie.Name = GetSeriesName(name);
+            serie.LegendText = GetLegendName(name);
+        }
+
+        private void UpdateSerieNames()
+        {
+            UpdateSeriesNaming("Gain", m_GainDBSeries);
+            UpdateSeriesNaming("Phase", m_PhaseDegreesSeries);
+            UpdateSeriesNaming("Impedance", m_DUTImpedanceMilliOhmSeries);
+            UpdateSeriesNaming("Phase", m_DUTPhaseDegreesSeries);
+            UpdateSeriesNaming("Capacitance", m_DUTCapacitancePicoFaredSeries);
+            UpdateSeriesNaming("ESR", m_DUT_ESRMilliOhmSeries);
+            UpdateSeriesNaming("Inductance", m_DUTInductanceNanoHenrySeries);
+            UpdateSeriesNaming("Gain", m_GainDBSeries);
+        }
+
         private Series CreateLineSerie(string name, AxisType yAxisType)
         {
-            Series series = new Series(name + " : " + FilePath);
-            series.ChartType = SeriesChartType.Line;
-            series.YAxisType = yAxisType;
+            Series serie = new Series(GetSeriesName(name));
+            serie.LegendText = GetLegendName(name);
+            serie.ChartType = SeriesChartType.Line;
+            serie.YAxisType = yAxisType;
             if (yAxisType == AxisType.Primary)
             {
-                series.BorderDashStyle = ChartDashStyle.Solid;
-                series.MarkerStyle = MarkerStyle.None;
-                series.BorderWidth = 2;
+                serie.BorderDashStyle = ChartDashStyle.Solid;
+                serie.MarkerStyle = MarkerStyle.None;
+                serie.BorderWidth = 2;
             }
             else
             {
-                series.BorderDashStyle = ChartDashStyle.Dash;
-                series.MarkerStyle = MarkerStyle.Circle;
-                series.BorderWidth = 2;
-                series.MarkerSize = series.BorderWidth * 4;
+                serie.BorderDashStyle = ChartDashStyle.Dash;
+                serie.MarkerStyle = MarkerStyle.Circle;
+                serie.BorderWidth = 2;
+                serie.MarkerSize = serie.BorderWidth * 4;
             }
-            series.Enabled = true;
-            series.XValueType = ChartValueType.Double;
-            series.YValueType = ChartValueType.Double;
-            series.IsVisibleInLegend = true;
-            series.ToolTip = FilePath;
-            series.LegendText = name + " : " + this.FileName;
-            series.Tag = this;
-            return series;
+            serie.Enabled = true;
+            serie.XValueType = ChartValueType.Double;
+            serie.YValueType = ChartValueType.Double;
+            serie.IsVisibleInLegend = true;
+            serie.ToolTip = FilePath;
+
+            serie.Tag = this;
+            return serie;
         }
 
-        public string GetDataTable()
+        public string GetDataTable(FRATableFormat tableFormat)
         {
             using (StringWriter wr = new StringWriter())
             {
-                wr.WriteLine(this.FileName);
-                wr.WriteLine(FRAResult.ToStringTitles());
-                foreach (FRAResult result in m_FRAResults) wr.WriteLine(result.ToStringValues());
+                wr.WriteLine(FRAResult.ToStringTitles(tableFormat));
+                foreach (FRAResult result in m_FRAResults) wr.WriteLine(result.ToStringValues(tableFormat));
                 return wr.ToString();
             }
         }
@@ -690,7 +790,17 @@ namespace FRA_IMP
 
     public enum FRAFileType
     {
-        FRA4PicoScope = 1,
-        Keysight = 2,
+        FRA4PicoScope,
+        Keysight,
+        RhodeSchwarz,
+    }
+
+    public enum FRATableFormat
+    {
+        CSV_FRA4PicoScope,
+        CSV_Keysight,
+        CSV_RhodeSchwarz,
+        Excel_ALL
+
     }
 }
