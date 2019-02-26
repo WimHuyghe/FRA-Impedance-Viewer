@@ -31,23 +31,23 @@ namespace FRA_IMP
 
         private void InitForm()
         {
-            // Input DUT
+            // Input DUT = Output generator
             foreach (PS_CHANNEL channel in Enum.GetValues(typeof(PS_CHANNEL))) comboBoxInputChannel.Items.Add(channel);
-            comboBoxInputChannel.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance,"InputChannel");
+            comboBoxInputChannel.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance,"InputDUTChannel");
             foreach (ATTEN_T atten in Enum.GetValues(typeof(ATTEN_T))) comboBoxInputAttenuation.Items.Add(atten);
-            comboBoxInputAttenuation.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "InputAttenuation");
+            comboBoxInputAttenuation.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "InputDUTAttenuation");
             foreach (PS_COUPLING coupling in Enum.GetValues(typeof(PS_COUPLING))) comboBoxInputCoupling.Items.Add(coupling);
-            comboBoxInputCoupling.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "InputCoupling");
-            textBoxInputOffset.DataBindings.Add("Text", FRA4Picoscope.Instance, "InputDCOffset");
+            comboBoxInputCoupling.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "InputDUTCoupling");
+            textBoxInputOffset.DataBindings.Add("Text", FRA4Picoscope.Instance, "InputDUTDCOffset");
 
             // Output DUT
             foreach (PS_CHANNEL channel in Enum.GetValues(typeof(PS_CHANNEL))) comboBoxOutputChannel.Items.Add(channel);
-            comboBoxOutputChannel.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "OutputChannel");
+            comboBoxOutputChannel.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "OutputDUTChannel");
             foreach (ATTEN_T atten in Enum.GetValues(typeof(ATTEN_T))) comboBoxOutputAttenuation.Items.Add(atten);
-            comboBoxOutputAttenuation.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "OutputAttenuation");
+            comboBoxOutputAttenuation.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "OutputDUTAttenuation");
             foreach (PS_COUPLING coupling in Enum.GetValues(typeof(PS_COUPLING))) comboBoxOutputCoupling.Items.Add(coupling);
-            comboBoxOutputCoupling.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "OutputCoupling");
-            textBoxOutputOffset.DataBindings.Add("Text", FRA4Picoscope.Instance, "OutputDCOffset");
+            comboBoxOutputCoupling.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "OutputDUTCoupling");
+            textBoxOutputOffset.DataBindings.Add("Text", FRA4Picoscope.Instance, "OutputDUTDCOffset");
 
             // Stimulus
             textBoxStimulusAmplitude.DataBindings.Add("Text", FRA4Picoscope.Instance, "InitialStimulus");
@@ -57,7 +57,11 @@ namespace FRA_IMP
             textBoxStartFrequency.DataBindings.Add("Text", FRA4Picoscope.Instance, "StartFrequencyHz");
             textBoxStopFrequency.DataBindings.Add("Text", FRA4Picoscope.Instance, "StopFrequencyHz");
             textBoxStepsPerDecade.DataBindings.Add("Text", FRA4Picoscope.Instance, "StepsPerDecade");
+            foreach (SweepDirection direction in Enum.GetValues(typeof(SweepDirection))) comboBoxSweepDirection.Items.Add(direction);
+            comboBoxSweepDirection.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "SweepDirection");
 
+            // Test Jig
+            textBoxReferenceResistor.DataBindings.Add("Text", FRA4Picoscope.Instance, "TestJigReferenceResistor");
         }
 
         private void StartMeasurement()
@@ -122,7 +126,9 @@ namespace FRA_IMP
                 return;
             }
             EndMeasurement();
-            m_FileCollection.Add(new FRAFile(FRAFileType.FRA4PicoScope, frequenciesLogHz, gainsDb, phasesDegrees, 1000));
+            FRAFile measurementResult = new FRAFile(FRAFileType.FRA4PicoScope, frequenciesLogHz, gainsDb, phasesDegrees, FRA4Picoscope.Instance.TestJigReferenceResistor);
+            measurementResult.MeasurementConditions = FRA4Picoscope.Instance.MeasurementConditionsSummary();
+            m_FileCollection.Add(measurementResult);
             this.Cursor = Cursors.Default;
             this.Close();
         }

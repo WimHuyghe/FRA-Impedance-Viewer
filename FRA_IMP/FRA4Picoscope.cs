@@ -17,8 +17,6 @@ namespace FRA_IMP
         private ILogService logService;
         private bool scopeConnected = false;
 
-
-
         #region Singleton
 
         static readonly FRA4Picoscope m_Instance = new FRA4Picoscope();
@@ -36,6 +34,8 @@ namespace FRA_IMP
         }
 
         #endregion
+
+        #region Picoscope control via FRA4Picoscope API
 
         private void ConnectPicoscope()
         {
@@ -72,12 +72,14 @@ namespace FRA_IMP
         public string CheckSettings()
         {
             StringWriter result = new StringWriter();
+            if(TestJigReferenceResistor<0) result.WriteLine("Test Jig Reference resistor cannot be negative!");
+
             if (!scopeConnected) ConnectPicoscope(); // must be connected to check the min frequency
             double minFrequency = FRA4PicoscopeAPI.GetMinFrequency();
             if (StartFrequencyHz < minFrequency) result.WriteLine("Start frequency must be higher than " + minFrequency + " Hz");
             if (StopFrequencyHz < minFrequency) result.WriteLine("Stop frequency must be higher than " + minFrequency + " Hz");
             if (StartFrequencyHz > StopFrequencyHz) result.WriteLine("Start frequency must be higher than Stop frequency !");
-            if (InputChannel == OutputChannel) result.WriteLine("Input channel and output channel cannot be identical");
+            if (InputDUTChannel == OutputDUTChannel) result.WriteLine("Input channel and output channel cannot be identical");
             if (InitialStimulus > MaxStimulus) result.WriteLine("Initial Stimulus must be smaller than max stimulus");
             if (StepsPerDecade < 1) result.WriteLine("Steps per decade must be greater than zero!");
             if (PhaseWrappingThreshold <= 0) result.WriteLine("Phase wrapping threshold must be greater than zero!");
@@ -92,7 +94,7 @@ namespace FRA_IMP
             byte stimulusMode = 0;
             if (AdaptiveStimulusMode) stimulusMode = 1;
             byte sweepDec = 0;
-            if (SweepDescending) sweepDec = 1;
+            if (SweepDirection == SweepDirection.Decending) sweepDec = 1;
             FRA4PicoscopeAPI.SetFraSettings(SamplingMode, stimulusMode, TargetResponseAmplitude, sweepDec, PhaseWrappingThreshold);
         }
 
@@ -106,10 +108,10 @@ namespace FRA_IMP
         private void SetUpChannels()
         {
             logService.Info("Setting up Picoscope succesfully channels...");
-            logService.Info("Inputchannel:" + InputChannel.ToString() + "   Coupling:" + InputCoupling.ToString() + "   Atten:" + InputAttenuation.ToString() + "   DC Offset:" + InputDCOffset.ToString());
-            logService.Info("Outputchannel:" + OutputChannel.ToString() + "   Coupling:" + OutputCoupling.ToString() + "   Atten:" + OutputAttenuation.ToString() + "   DC Offset:" + OutputDCOffset.ToString());
+            logService.Info("Input DUT channel:" + InputDUTChannel.ToString() + "   Coupling:" + InputDUTCoupling.ToString() + "   Atten:" + InputDUTAttenuation.ToString() + "   DC Offset:" + InputDUTDCOffset.ToString());
+            logService.Info("Output DUT channel:" + OutputDUTChannel.ToString() + "   Coupling:" + OutputDUTCoupling.ToString() + "   Atten:" + OutputDUTAttenuation.ToString() + "   DC Offset:" + OutputDUTDCOffset.ToString());
             logService.Info("Initial stimulus:" + InitialStimulus.ToString() + "   Max Stimulis:" + MaxStimulus + "   Stimmulus Offset:" + StimulusOffset.ToString());
-            byte result = FRA4PicoscopeAPI.SetupChannels(InputChannel, InputCoupling, InputAttenuation, InputDCOffset, OutputChannel, OutputCoupling, OutputAttenuation, OutputDCOffset,
+            byte result = FRA4PicoscopeAPI.SetupChannels(OutputDUTChannel, OutputDUTCoupling, OutputDUTAttenuation, OutputDUTDCOffset, InputDUTChannel, InputDUTCoupling, InputDUTAttenuation, InputDUTDCOffset,
                 InitialStimulus, MaxStimulus, StimulusOffset);
             if (result != 1) HandlePicoException("Failed to setup channels and stimulus: " + result.ToString());
             else logService.Info("Picoscope channels and stimulus succesfully setup");
@@ -180,33 +182,30 @@ namespace FRA_IMP
             }
         }
 
-        #region IDisposable
-
-        bool is_disposed = false;
-        protected virtual void Dispose(bool disposing)
+        private void HandlePicoException(string message)
         {
-            if (!is_disposed) // only dispose once!
+            logService.Error(message);
+            FRA4PicoscopeAPI.Cleanup();
+            scopeConnected = false;
+            throw new ApplicationException(message);
+        }
+
+        public string MeasurementConditionsSummary()
+        {
+            using (StringWriter result= new StringWriter())
             {
-                if (disposing) // Not in destructor, OK to reference other objects
-                {
-                    FRA4PicoscopeAPI.Cleanup();
-                    scopeConnected = false;
-                }
-                // perform cleanup for this object itself
+                result.WriteLine("Input DUT=> Scope Channel: " + InputDUTChannel.ToString() + " Coupling: " + InputDUTCoupling.ToString() + "  Attenuation: "
+                    + InputDUTAttenuation.ToString() + " DC Offset: " + InputDUTDCOffset.ToString() + "V");
+                result.WriteLine("Output DUT=> Scope Channel: " + OutputDUTChannel.ToString() + " Coupling: " + OutputDUTCoupling.ToString() + "  Attenuation: "
+                + OutputDUTAttenuation.ToString() + " DC Offset: " + OutputDUTDCOffset.ToString() + "V");
 
+                result.WriteLine("Stimulus DUT=> Amplitude: " + InitialStimulus.ToString() + "V" + " DC Offset: " + StimulusOffset.ToString() + "V");
+
+                result.WriteLine("Frequency Sweep => Start Freqeuncy: " + StartFrequencyHz.ToString() + " Hz " + " Stop Freqeuncy: " + StopFrequencyHz.ToString() + " Hz " +
+                    " Steps/Decade: " + StepsPerDecade.ToString() + " Sweepdirection: " + SweepDirection.ToString());
+
+                return result.ToString();
             }
-            this.is_disposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        ~FRA4Picoscope()
-        {
-            Dispose(false);
 
         }
 
@@ -214,49 +213,55 @@ namespace FRA_IMP
 
         #region Properties
 
-        public PS_CHANNEL InputChannel
+        public double TestJigReferenceResistor
         {
-            get { return (PS_CHANNEL)Enum.Parse(typeof(PS_CHANNEL), (m_SettingsManager.GetStringValue("InputChannel", PS_CHANNEL.PS_CHANNEL_A.ToString()))); }
-            set { m_SettingsManager.SetStringValue("InputChannel", value.ToString()); }
+            get { return m_SettingsManager.GetDoubleValue("TestJigReferenceResistor", 1000.0); }
+            set { m_SettingsManager.SetDoubleValue("TestJigReferenceResistor", value); }
         }
 
-        public PS_COUPLING InputCoupling
+        public PS_CHANNEL InputDUTChannel
         {
-            get { return (PS_COUPLING)Enum.Parse(typeof(PS_COUPLING), (m_SettingsManager.GetStringValue("InputCoupling", PS_COUPLING.PS_DC.ToString()))); }
-            set { m_SettingsManager.SetStringValue("InputCoupling", value.ToString()); }
+            get { return (PS_CHANNEL)Enum.Parse(typeof(PS_CHANNEL), (m_SettingsManager.GetStringValue("InputDUTChannel", PS_CHANNEL.A.ToString()))); }
+            set { m_SettingsManager.SetStringValue("InputDUTChannel", value.ToString()); }
         }
 
-        public ATTEN_T InputAttenuation
+        public PS_COUPLING InputDUTCoupling
         {
-            get { return (ATTEN_T)Enum.Parse(typeof(ATTEN_T), (m_SettingsManager.GetStringValue("InputAttenuation", ATTEN_T.ATTEN_1X.ToString()))); }
-            set { m_SettingsManager.SetStringValue("InputAttenuation", value.ToString()); }
+            get { return (PS_COUPLING)Enum.Parse(typeof(PS_COUPLING), (m_SettingsManager.GetStringValue("InputDUTCoupling", PS_COUPLING.DC.ToString()))); }
+            set { m_SettingsManager.SetStringValue("InputDUTCoupling", value.ToString()); }
         }
 
-        public double InputDCOffset
+        public ATTEN_T InputDUTAttenuation
         {
-            get { return m_SettingsManager.GetDoubleValue("InputDCOffset", 0.0); }
-            set { m_SettingsManager.SetDoubleValue("InputDCOffset", value); }
+            get { return (ATTEN_T)Enum.Parse(typeof(ATTEN_T), (m_SettingsManager.GetStringValue("InputDUTAttenuation", ATTEN_T.X1.ToString()))); }
+            set { m_SettingsManager.SetStringValue("InputDUTAttenuation", value.ToString()); }
         }
 
-        public PS_CHANNEL OutputChannel
+        public double InputDUTDCOffset
         {
-            get { return (PS_CHANNEL)Enum.Parse(typeof(PS_CHANNEL), (m_SettingsManager.GetStringValue("OutputChannel", PS_CHANNEL.PS_CHANNEL_B.ToString()))); }
+            get { return m_SettingsManager.GetDoubleValue("InputDUTDCOffset", 0.0); }
+            set { m_SettingsManager.SetDoubleValue("InputDUTDCOffset", value); }
+        }
+
+        public PS_CHANNEL OutputDUTChannel
+        {
+            get { return (PS_CHANNEL)Enum.Parse(typeof(PS_CHANNEL), (m_SettingsManager.GetStringValue("OutputChannel", PS_CHANNEL.B.ToString()))); }
             set { m_SettingsManager.SetStringValue("OutputChannel", value.ToString()); }
         }
 
-        public PS_COUPLING OutputCoupling
+        public PS_COUPLING OutputDUTCoupling
         {
-            get { return (PS_COUPLING)Enum.Parse(typeof(PS_COUPLING), (m_SettingsManager.GetStringValue("OutputCoupling", PS_COUPLING.PS_DC.ToString()))); }
+            get { return (PS_COUPLING)Enum.Parse(typeof(PS_COUPLING), (m_SettingsManager.GetStringValue("OutputCoupling", PS_COUPLING.DC.ToString()))); }
             set { m_SettingsManager.SetStringValue("OutputCoupling", value.ToString()); }
         }
 
-        public ATTEN_T OutputAttenuation
+        public ATTEN_T OutputDUTAttenuation
         {
-            get { return (ATTEN_T)Enum.Parse(typeof(ATTEN_T), (m_SettingsManager.GetStringValue("OutputAttenuation", ATTEN_T.ATTEN_1X.ToString()))); }
+            get { return (ATTEN_T)Enum.Parse(typeof(ATTEN_T), (m_SettingsManager.GetStringValue("OutputAttenuation", ATTEN_T.X1.ToString()))); }
             set { m_SettingsManager.SetStringValue("OutputAttenuation", value.ToString()); }
         }
 
-        public double OutputDCOffset
+        public double OutputDUTDCOffset
         {
             get { return m_SettingsManager.GetDoubleValue("OutputDCOffset", 0.0); }
             set { m_SettingsManager.SetDoubleValue("OutputDCOffset", value); }
@@ -264,7 +269,7 @@ namespace FRA_IMP
 
         public double InitialStimulus
         {
-            get { return m_SettingsManager.GetDoubleValue("InitialStimulus", 0.0); }
+            get { return m_SettingsManager.GetDoubleValue("InitialStimulus", 0.1); }
             set { m_SettingsManager.SetDoubleValue("InitialStimulus", value); }
         }
 
@@ -310,10 +315,10 @@ namespace FRA_IMP
             set { m_SettingsManager.SetBooleanValue("AdaptiveStimulusMode", value); }
         }
 
-        public bool SweepDescending
+        public SweepDirection SweepDirection
         {
-            get { return m_SettingsManager.GetBooleanValue("SweepDescending", false); }
-            set { m_SettingsManager.SetBooleanValue("SweepDescending", value); }
+            get { return (SweepDirection)Enum.Parse(typeof(SweepDirection), (m_SettingsManager.GetStringValue("SweepDirection", SweepDirection.Ascending.ToString()))); }
+            set { m_SettingsManager.SetStringValue("SweepDirection", value.ToString()); }
         }
 
         public double TargetResponseAmplitude
@@ -481,81 +486,36 @@ namespace FRA_IMP
 
         #endregion
 
-        private void HandlePicoException(string message)
+        #region IDisposable
+
+        bool is_disposed = false;
+        protected virtual void Dispose(bool disposing)
         {
-            logService.Error(message);
-            FRA4PicoscopeAPI.Cleanup();
-            scopeConnected = false;
-            throw new ApplicationException(message);
+            if (!is_disposed) // only dispose once!
+            {
+                if (disposing) // Not in destructor, OK to reference other objects
+                {
+                    FRA4PicoscopeAPI.Cleanup();
+                    scopeConnected = false;
+                }
+                // perform cleanup for this object itself
+
+            }
+            this.is_disposed = true;
         }
-    }
 
-    #region Enuums
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-    public enum PS_CHANNEL
-    {
-        PS_CHANNEL_A,
-        PS_CHANNEL_B,
-        PS_CHANNEL_C,
-        PS_CHANNEL_D,
-        PS_CHANNEL_E,
-        PS_CHANNEL_F,
-        PS_CHANNEL_G,
-        PS_CHANNEL_H,
-        PS_CHANNEL_INVALID,
-    }
+        ~FRA4Picoscope()
+        {
+            Dispose(false);
 
-    public enum PS_COUPLING
-    {
-        PS_AC,
-        PS_DC,
-        PS_DC_1M = PS_DC,
-        PS_DC_50R,
-    }
+        }
 
-    public enum ATTEN_T
-    {
-        ATTEN_1X,
-        ATTEN_10X,
-        ATTEN_20X,
-        ATTEN_100X,
-        ATTEN_200X,
-        ATTEN_1000X,
-    }
-
-    public enum SamplingMode_T
-    {
-        LOW_NOISE,
-        HIGH_NOISE,
-    }
-
-    public enum FRA_STATUS_T
-    {
-        FRA_STATUS_IDLE,
-        FRA_STATUS_IN_PROGRESS,
-        FRA_STATUS_COMPLETE,
-        FRA_STATUS_CANCELED,
-        FRA_STATUS_AUTORANGE_LIMIT,
-        FRA_STATUS_POWER_CHANGED,
-        FRA_STATUS_FATAL_ERROR,
-        FRA_STATUS_MESSAGE,
-    }
-
-    public enum LOG_MESSAGE_FLAGS_T
-    {
-        SCOPE_ACCESS_DIAGNOSTICS = 0x0001,
-        FRA_PROGRESS = 0x0002,
-        STEP_TRIAL_PROGRESS = 0x0004,
-        SIGNAL_GENERATOR_DIAGNOSTICS = 0x0008,
-        AUTORANGE_DIAGNOSTICS = 0x0010,
-        ADAPTIVE_STIMULUS_DIAGNOSTICS = 0x0020,
-        SAMPLE_PROCESSING_DIAGNOSTICS = 0x0040,
-        DFT_DIAGNOSTICS = 0x0080,
-        SCOPE_POWER_EVENTS = 0x0100,
-        SAVE_EXPORT_STATUS = 0x0200,
-        FRA_WARNING = 0x0400,
-        FRA_ERROR = 0x8000,
-    }
-
-    #endregion
+        #endregion  
+    }  
 }

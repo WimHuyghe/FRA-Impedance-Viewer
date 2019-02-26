@@ -492,13 +492,23 @@ namespace FRA_IMP
         public string GetInductanceInfo(double frequency, bool logFrequencyAxis)
         {
             StringWriter writer = new StringWriter();
-            foreach (FRAFile file in m_Files) if(file.ReferenceResistorOhms!=0)writer.WriteLine(file.GetInducductanceInfo(frequency, logFrequencyAxis) + "     (" + file.FileName + ")");
+            foreach (FRAFile file in m_Files) if (file.ReferenceResistorOhms != 0) writer.WriteLine(file.GetInducductanceInfo(frequency, logFrequencyAxis) + "     (" + file.FileName + ")");
             return writer.ToString();
         }
 
-        #endregion
+        public bool ContrainsUnsavedFiles
+        {
+            get
+            {
+                bool result = false;
+                foreach (FRAFile file in m_Files) if (file.FilePath.Equals("")) result = true;
+                return result;
+            }
+        }
 
-        #region File Management
+    #endregion
+
+            #region File Management
 
         public void NewFile(string path, FRAFileType fileType, double referenceResistor)
         {
@@ -515,7 +525,7 @@ namespace FRA_IMP
                 this.Add(new FRAFile(path, fileType, referenceResistor));
                 return true;
             }
-            else return false; 
+            else return false;
         }
 
         public event EventHandler<FRAFileEventArgs> CollectionChanged;
@@ -523,7 +533,7 @@ namespace FRA_IMP
         {
             FRAFileEventArgs eventArgs = new FRAFileEventArgs(file, change);
             if (CollectionChanged != null) CollectionChanged.Invoke(this, eventArgs);
-        } 
+        }
 
         public bool ContainsFile(string path)
         {

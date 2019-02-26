@@ -74,5 +74,76 @@ namespace FRA_IMP
 
         [DllImport("FRA4PicoScope.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern void Cleanup();
+
+    }
+
+    public enum PS_CHANNEL
+    {
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G,
+        H,
+    }
+
+    public enum PS_COUPLING
+    {
+        AC,
+        DC,
+        DC_1M = DC,
+        DC_50R,
+    }
+
+    public enum ATTEN_T
+    {
+        X1,
+        X10,
+        X20,
+        X100,
+        X200,
+        X1000,
+    }
+
+    public enum SamplingMode_T
+    {
+        LOW_NOISE,
+        HIGH_NOISE,
+    }
+
+    public enum SweepDirection
+    {
+        Ascending=0,
+        Decending=1,
+    }
+
+    public enum FRA_STATUS_T
+    {
+        FRA_STATUS_IDLE,
+        FRA_STATUS_IN_PROGRESS,
+        FRA_STATUS_COMPLETE,
+        FRA_STATUS_CANCELED,
+        FRA_STATUS_AUTORANGE_LIMIT,
+        FRA_STATUS_POWER_CHANGED,
+        FRA_STATUS_FATAL_ERROR,
+        FRA_STATUS_MESSAGE,
+    }
+
+    public enum LOG_MESSAGE_FLAGS_T
+    {
+        SCOPE_ACCESS_DIAGNOSTICS = 0x0001,
+        FRA_PROGRESS = 0x0002,
+        STEP_TRIAL_PROGRESS = 0x0004,
+        SIGNAL_GENERATOR_DIAGNOSTICS = 0x0008,
+        AUTORANGE_DIAGNOSTICS = 0x0010,
+        ADAPTIVE_STIMULUS_DIAGNOSTICS = 0x0020,
+        SAMPLE_PROCESSING_DIAGNOSTICS = 0x0040,
+        DFT_DIAGNOSTICS = 0x0080,
+        SCOPE_POWER_EVENTS = 0x0100,
+        SAVE_EXPORT_STATUS = 0x0200,
+        FRA_WARNING = 0x0400,
+        FRA_ERROR = 0x8000,
     }
 }

@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InfoFile));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.label19 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxFileName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -66,6 +67,7 @@
             this.label18 = new System.Windows.Forms.Label();
             this.textBoxMax_ESR = new System.Windows.Forms.TextBox();
             this.textBoxMin_ESR = new System.Windows.Forms.TextBox();
+            this.richTextBoxMeasurementConditions = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -74,6 +76,7 @@
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.label19, 0, 19);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.textBoxFileName, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
@@ -110,6 +113,7 @@
             this.tableLayoutPanel1.Controls.Add(this.label18, 0, 18);
             this.tableLayoutPanel1.Controls.Add(this.textBoxMax_ESR, 1, 17);
             this.tableLayoutPanel1.Controls.Add(this.textBoxMin_ESR, 1, 18);
+            this.tableLayoutPanel1.Controls.Add(this.richTextBoxMeasurementConditions, 1, 19);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -134,8 +138,18 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(388, 470);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(388, 575);
             this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Location = new System.Drawing.Point(3, 468);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(145, 13);
+            this.label19.TabIndex = 2;
+            this.label19.Text = "Measurement Conditions";
             // 
             // label1
             // 
@@ -152,10 +166,10 @@
             // 
             this.textBoxFileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxFileName.Location = new System.Drawing.Point(107, 3);
+            this.textBoxFileName.Location = new System.Drawing.Point(154, 3);
             this.textBoxFileName.Name = "textBoxFileName";
             this.textBoxFileName.ReadOnly = true;
-            this.textBoxFileName.Size = new System.Drawing.Size(278, 20);
+            this.textBoxFileName.Size = new System.Drawing.Size(231, 20);
             this.textBoxFileName.TabIndex = 1;
             // 
             // label2
@@ -165,7 +179,7 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(3, 32);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(29, 13);
+            this.label2.Size = new System.Drawing.Size(33, 13);
             this.label2.TabIndex = 0;
             this.label2.Text = "Path";
             // 
@@ -173,10 +187,10 @@
             // 
             this.textBoxPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPath.Location = new System.Drawing.Point(107, 29);
+            this.textBoxPath.Location = new System.Drawing.Point(154, 29);
             this.textBoxPath.Name = "textBoxPath";
             this.textBoxPath.ReadOnly = true;
-            this.textBoxPath.Size = new System.Drawing.Size(278, 20);
+            this.textBoxPath.Size = new System.Drawing.Size(231, 20);
             this.textBoxPath.TabIndex = 1;
             // 
             // label3
@@ -186,7 +200,7 @@
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(3, 84);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(98, 13);
+            this.label3.Size = new System.Drawing.Size(116, 13);
             this.label3.TabIndex = 0;
             this.label3.Text = "Reference Resistor";
             // 
@@ -194,10 +208,10 @@
             // 
             this.textBoxReferenceResistor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxReferenceResistor.Location = new System.Drawing.Point(107, 81);
+            this.textBoxReferenceResistor.Location = new System.Drawing.Point(154, 81);
             this.textBoxReferenceResistor.Name = "textBoxReferenceResistor";
             this.textBoxReferenceResistor.ReadOnly = true;
-            this.textBoxReferenceResistor.Size = new System.Drawing.Size(278, 20);
+            this.textBoxReferenceResistor.Size = new System.Drawing.Size(231, 20);
             this.textBoxReferenceResistor.TabIndex = 1;
             // 
             // label4
@@ -207,7 +221,7 @@
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(3, 110);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(77, 13);
+            this.label4.Size = new System.Drawing.Size(90, 13);
             this.label4.TabIndex = 0;
             this.label4.Text = "Min Frequency";
             // 
@@ -218,7 +232,7 @@
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(3, 136);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(80, 13);
+            this.label5.Size = new System.Drawing.Size(93, 13);
             this.label5.TabIndex = 0;
             this.label5.Text = "Max Frequency";
             // 
@@ -226,20 +240,20 @@
             // 
             this.textBoxMinFrequency.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMinFrequency.Location = new System.Drawing.Point(107, 107);
+            this.textBoxMinFrequency.Location = new System.Drawing.Point(154, 107);
             this.textBoxMinFrequency.Name = "textBoxMinFrequency";
             this.textBoxMinFrequency.ReadOnly = true;
-            this.textBoxMinFrequency.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMinFrequency.Size = new System.Drawing.Size(231, 20);
             this.textBoxMinFrequency.TabIndex = 1;
             // 
             // textBoxMaxFrequency
             // 
             this.textBoxMaxFrequency.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMaxFrequency.Location = new System.Drawing.Point(107, 133);
+            this.textBoxMaxFrequency.Location = new System.Drawing.Point(154, 133);
             this.textBoxMaxFrequency.Name = "textBoxMaxFrequency";
             this.textBoxMaxFrequency.ReadOnly = true;
-            this.textBoxMaxFrequency.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMaxFrequency.Size = new System.Drawing.Size(231, 20);
             this.textBoxMaxFrequency.TabIndex = 1;
             // 
             // label6
@@ -249,7 +263,7 @@
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(3, 162);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(84, 13);
+            this.label6.Size = new System.Drawing.Size(100, 13);
             this.label6.TabIndex = 0;
             this.label6.Text = "Nr of Datapoints";
             // 
@@ -257,10 +271,10 @@
             // 
             this.textBoxNrOfDataPoints.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxNrOfDataPoints.Location = new System.Drawing.Point(107, 159);
+            this.textBoxNrOfDataPoints.Location = new System.Drawing.Point(154, 159);
             this.textBoxNrOfDataPoints.Name = "textBoxNrOfDataPoints";
             this.textBoxNrOfDataPoints.ReadOnly = true;
-            this.textBoxNrOfDataPoints.Size = new System.Drawing.Size(278, 20);
+            this.textBoxNrOfDataPoints.Size = new System.Drawing.Size(231, 20);
             this.textBoxNrOfDataPoints.TabIndex = 1;
             // 
             // label7
@@ -270,7 +284,7 @@
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(3, 58);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(50, 13);
+            this.label7.Size = new System.Drawing.Size(59, 13);
             this.label7.TabIndex = 0;
             this.label7.Text = "File Type";
             // 
@@ -278,10 +292,10 @@
             // 
             this.textBoxFileType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxFileType.Location = new System.Drawing.Point(107, 55);
+            this.textBoxFileType.Location = new System.Drawing.Point(154, 55);
             this.textBoxFileType.Name = "textBoxFileType";
             this.textBoxFileType.ReadOnly = true;
-            this.textBoxFileType.Size = new System.Drawing.Size(278, 20);
+            this.textBoxFileType.Size = new System.Drawing.Size(231, 20);
             this.textBoxFileType.TabIndex = 1;
             // 
             // label8
@@ -291,7 +305,7 @@
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.Location = new System.Drawing.Point(3, 188);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(72, 13);
+            this.label8.Size = new System.Drawing.Size(84, 13);
             this.label8.TabIndex = 0;
             this.label8.Text = "Average Gain";
             // 
@@ -299,10 +313,10 @@
             // 
             this.textBoxAverageGain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAverageGain.Location = new System.Drawing.Point(107, 185);
+            this.textBoxAverageGain.Location = new System.Drawing.Point(154, 185);
             this.textBoxAverageGain.Name = "textBoxAverageGain";
             this.textBoxAverageGain.ReadOnly = true;
-            this.textBoxAverageGain.Size = new System.Drawing.Size(278, 20);
+            this.textBoxAverageGain.Size = new System.Drawing.Size(231, 20);
             this.textBoxAverageGain.TabIndex = 1;
             // 
             // label9
@@ -312,7 +326,7 @@
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.Location = new System.Drawing.Point(3, 214);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(52, 13);
+            this.label9.Size = new System.Drawing.Size(60, 13);
             this.label9.TabIndex = 0;
             this.label9.Text = "Max Gain";
             // 
@@ -320,10 +334,10 @@
             // 
             this.textBoxMaxGain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMaxGain.Location = new System.Drawing.Point(107, 211);
+            this.textBoxMaxGain.Location = new System.Drawing.Point(154, 211);
             this.textBoxMaxGain.Name = "textBoxMaxGain";
             this.textBoxMaxGain.ReadOnly = true;
-            this.textBoxMaxGain.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMaxGain.Size = new System.Drawing.Size(231, 20);
             this.textBoxMaxGain.TabIndex = 1;
             // 
             // label10
@@ -333,7 +347,7 @@
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.Location = new System.Drawing.Point(3, 240);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(49, 13);
+            this.label10.Size = new System.Drawing.Size(57, 13);
             this.label10.TabIndex = 0;
             this.label10.Text = "Min Gain";
             // 
@@ -341,10 +355,10 @@
             // 
             this.textBoxMinGain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMinGain.Location = new System.Drawing.Point(107, 237);
+            this.textBoxMinGain.Location = new System.Drawing.Point(154, 237);
             this.textBoxMinGain.Name = "textBoxMinGain";
             this.textBoxMinGain.ReadOnly = true;
-            this.textBoxMinGain.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMinGain.Size = new System.Drawing.Size(231, 20);
             this.textBoxMinGain.TabIndex = 1;
             // 
             // label11
@@ -354,7 +368,7 @@
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.Location = new System.Drawing.Point(3, 266);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(83, 13);
+            this.label11.Size = new System.Drawing.Size(96, 13);
             this.label11.TabIndex = 0;
             this.label11.Text = "Max Impedance";
             // 
@@ -365,7 +379,7 @@
             this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.Location = new System.Drawing.Point(3, 292);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(80, 13);
+            this.label12.Size = new System.Drawing.Size(93, 13);
             this.label12.TabIndex = 0;
             this.label12.Text = "Min Impedance";
             // 
@@ -376,7 +390,7 @@
             this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label13.Location = new System.Drawing.Point(3, 318);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(90, 13);
+            this.label13.Size = new System.Drawing.Size(105, 13);
             this.label13.TabIndex = 0;
             this.label13.Text = "Max Capacitance";
             // 
@@ -387,7 +401,7 @@
             this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label14.Location = new System.Drawing.Point(3, 344);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(87, 13);
+            this.label14.Size = new System.Drawing.Size(102, 13);
             this.label14.TabIndex = 0;
             this.label14.Text = "Min Capacitance";
             // 
@@ -398,7 +412,7 @@
             this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label15.Location = new System.Drawing.Point(3, 370);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(84, 13);
+            this.label15.Size = new System.Drawing.Size(98, 13);
             this.label15.TabIndex = 0;
             this.label15.Text = "Max Inductance";
             // 
@@ -409,7 +423,7 @@
             this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label16.Location = new System.Drawing.Point(3, 396);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(81, 13);
+            this.label16.Size = new System.Drawing.Size(95, 13);
             this.label16.TabIndex = 0;
             this.label16.Text = "Min Inductance";
             // 
@@ -417,60 +431,60 @@
             // 
             this.textBoxMaxImpedance.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMaxImpedance.Location = new System.Drawing.Point(107, 263);
+            this.textBoxMaxImpedance.Location = new System.Drawing.Point(154, 263);
             this.textBoxMaxImpedance.Name = "textBoxMaxImpedance";
             this.textBoxMaxImpedance.ReadOnly = true;
-            this.textBoxMaxImpedance.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMaxImpedance.Size = new System.Drawing.Size(231, 20);
             this.textBoxMaxImpedance.TabIndex = 1;
             // 
             // textBoxMinImpedance
             // 
             this.textBoxMinImpedance.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMinImpedance.Location = new System.Drawing.Point(107, 289);
+            this.textBoxMinImpedance.Location = new System.Drawing.Point(154, 289);
             this.textBoxMinImpedance.Name = "textBoxMinImpedance";
             this.textBoxMinImpedance.ReadOnly = true;
-            this.textBoxMinImpedance.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMinImpedance.Size = new System.Drawing.Size(231, 20);
             this.textBoxMinImpedance.TabIndex = 1;
             // 
             // textBoxMaxCapacitance
             // 
             this.textBoxMaxCapacitance.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMaxCapacitance.Location = new System.Drawing.Point(107, 315);
+            this.textBoxMaxCapacitance.Location = new System.Drawing.Point(154, 315);
             this.textBoxMaxCapacitance.Name = "textBoxMaxCapacitance";
             this.textBoxMaxCapacitance.ReadOnly = true;
-            this.textBoxMaxCapacitance.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMaxCapacitance.Size = new System.Drawing.Size(231, 20);
             this.textBoxMaxCapacitance.TabIndex = 1;
             // 
             // textBoxMinCapacitance
             // 
             this.textBoxMinCapacitance.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMinCapacitance.Location = new System.Drawing.Point(107, 341);
+            this.textBoxMinCapacitance.Location = new System.Drawing.Point(154, 341);
             this.textBoxMinCapacitance.Name = "textBoxMinCapacitance";
             this.textBoxMinCapacitance.ReadOnly = true;
-            this.textBoxMinCapacitance.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMinCapacitance.Size = new System.Drawing.Size(231, 20);
             this.textBoxMinCapacitance.TabIndex = 1;
             // 
             // textBoxMaxInductance
             // 
             this.textBoxMaxInductance.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMaxInductance.Location = new System.Drawing.Point(107, 367);
+            this.textBoxMaxInductance.Location = new System.Drawing.Point(154, 367);
             this.textBoxMaxInductance.Name = "textBoxMaxInductance";
             this.textBoxMaxInductance.ReadOnly = true;
-            this.textBoxMaxInductance.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMaxInductance.Size = new System.Drawing.Size(231, 20);
             this.textBoxMaxInductance.TabIndex = 1;
             // 
             // textBoxMinInductance
             // 
             this.textBoxMinInductance.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMinInductance.Location = new System.Drawing.Point(107, 393);
+            this.textBoxMinInductance.Location = new System.Drawing.Point(154, 393);
             this.textBoxMinInductance.Name = "textBoxMinInductance";
             this.textBoxMinInductance.ReadOnly = true;
-            this.textBoxMinInductance.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMinInductance.Size = new System.Drawing.Size(231, 20);
             this.textBoxMinInductance.TabIndex = 1;
             // 
             // label17
@@ -480,7 +494,7 @@
             this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label17.Location = new System.Drawing.Point(3, 422);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(52, 13);
+            this.label17.Size = new System.Drawing.Size(59, 13);
             this.label17.TabIndex = 0;
             this.label17.Text = "Max ESR";
             // 
@@ -491,7 +505,7 @@
             this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label18.Location = new System.Drawing.Point(3, 448);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(49, 13);
+            this.label18.Size = new System.Drawing.Size(56, 13);
             this.label18.TabIndex = 0;
             this.label18.Text = "Min ESR";
             // 
@@ -499,27 +513,37 @@
             // 
             this.textBoxMax_ESR.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMax_ESR.Location = new System.Drawing.Point(107, 419);
+            this.textBoxMax_ESR.Location = new System.Drawing.Point(154, 419);
             this.textBoxMax_ESR.Name = "textBoxMax_ESR";
             this.textBoxMax_ESR.ReadOnly = true;
-            this.textBoxMax_ESR.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMax_ESR.Size = new System.Drawing.Size(231, 20);
             this.textBoxMax_ESR.TabIndex = 1;
             // 
             // textBoxMin_ESR
             // 
             this.textBoxMin_ESR.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxMin_ESR.Location = new System.Drawing.Point(107, 445);
+            this.textBoxMin_ESR.Location = new System.Drawing.Point(154, 445);
             this.textBoxMin_ESR.Name = "textBoxMin_ESR";
             this.textBoxMin_ESR.ReadOnly = true;
-            this.textBoxMin_ESR.Size = new System.Drawing.Size(278, 20);
+            this.textBoxMin_ESR.Size = new System.Drawing.Size(231, 20);
             this.textBoxMin_ESR.TabIndex = 1;
+            // 
+            // richTextBoxMeasurementConditions
+            // 
+            this.richTextBoxMeasurementConditions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBoxMeasurementConditions.Location = new System.Drawing.Point(154, 471);
+            this.richTextBoxMeasurementConditions.Name = "richTextBoxMeasurementConditions";
+            this.richTextBoxMeasurementConditions.ReadOnly = true;
+            this.richTextBoxMeasurementConditions.Size = new System.Drawing.Size(231, 101);
+            this.richTextBoxMeasurementConditions.TabIndex = 3;
+            this.richTextBoxMeasurementConditions.Text = "";
             // 
             // InfoFile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(388, 470);
+            this.ClientSize = new System.Drawing.Size(388, 575);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "InfoFile";
@@ -569,5 +593,7 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox textBoxMax_ESR;
         private System.Windows.Forms.TextBox textBoxMin_ESR;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.RichTextBox richTextBoxMeasurementConditions;
     }
 }

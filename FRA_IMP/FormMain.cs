@@ -22,7 +22,7 @@ namespace FRA_IMP
         private Color cursorColor = Color.Black;
         private Color lineGridColor = Color.LightGray;
         private bool m_logFrequencyAxis;
-        private bool mainFormActive=true;
+        private bool mainFormActive = true;
 
         private ILogService logService;
         private FRAFileCollection m_Files;
@@ -47,7 +47,7 @@ namespace FRA_IMP
         {
             // first time program is run, set default folders (default is different depending on operating system)
             if (Properties.Settings.Default.PathSettingsFile.Equals(""))
-            {          
+            {
                 string defaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 Properties.Settings.Default.PathSettingsFile = Path.Combine(defaultPath, "FRA_IMP\\default.set");
                 logService.Info("Path settings file set to: " + Properties.Settings.Default.PathSettingsFile);
@@ -122,7 +122,7 @@ namespace FRA_IMP
                 chart.Legends[0].IsDockedInsideChartArea = false;
                 chart.Legends[0].DockedToChartArea = "Default";
                 chart.Legends[0].Docking = Docking.Right;
-                chart.Legends[0].TableStyle = LegendTableStyle.Auto;          
+                chart.Legends[0].TableStyle = LegendTableStyle.Auto;
             }
         }
 
@@ -224,32 +224,32 @@ namespace FRA_IMP
 
         private void fRA4PicoScopeFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFRA_File(true, FRAFileType.FRA4PicoScope);
-        }
-
-        private void keysightFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFRA_File(true, FRAFileType.Keysight);
+            NewFRA_File(FRAFileType.FRA4PicoScope);
         }
 
         private void fRA4PicoScopeFileToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            OpenFRA_File(false, FRAFileType.FRA4PicoScope);
+            NewFRA_File(FRAFileType.FRA4PicoScope);
+        }
+
+        private void keysightFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewFRA_File(FRAFileType.Keysight);
         }
 
         private void keysightFileToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            OpenFRA_File(false, FRAFileType.Keysight);
+            AddFRA_File(FRAFileType.Keysight);
         }
 
         private void rhodeSwToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFRA_File(true, FRAFileType.RhodeSchwarz);
+            NewFRA_File(FRAFileType.RhodeSchwarz);
         }
 
         private void rhodeSchwarzFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFRA_File(false, FRAFileType.RhodeSchwarz);
+            AddFRA_File(FRAFileType.RhodeSchwarz);
         }
 
         private void picoscopeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -282,7 +282,7 @@ namespace FRA_IMP
             if (m_logFrequencyAxis)
             {
                 logService.Info("Switch to linear frequency axis");
-                m_logFrequencyAxis = false;             
+                m_logFrequencyAxis = false;
             }
             else
             {
@@ -408,6 +408,26 @@ namespace FRA_IMP
             DialogResult result = inputBox.ShowDialog();
             input = textBox.Text;
             return result;
+        }
+
+        private void NewFRA_File(FRAFileType fileType)
+        {
+            if (m_Files.ContrainsUnsavedFiles)
+            {
+                DialogResult dialogResult = MessageBox.Show("Unsaved Measurements will be lost, do you want to continue", "Unsaved Measurements!", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    OpenFRA_File(true, fileType);
+                    return;
+                }
+                else return;
+            }
+            OpenFRA_File(true, fileType);
+        }
+
+        private void AddFRA_File(FRAFileType fileType)
+        {
+            OpenFRA_File(false, fileType);
         }
 
         private void OpenFRA_File(bool newChart, FRAFileType fileType)
@@ -575,10 +595,17 @@ namespace FRA_IMP
                 chartGainPhase.ChartAreas[0].AxisY2.MajorGrid.LineColor = lineGridColor;
                 chartGainPhase.ChartAreas[0].AxisY2.MajorGrid.LineWidth = 1;
 
-                chartGainPhase.ChartAreas[0].AxisX.ScaleView.ZoomReset();
-                chartGainPhase.ChartAreas[0].AxisY.ScaleView.ZoomReset();
-                chartGainPhase.ChartAreas[0].AxisY2.ScaleView.ZoomReset();
-                chartGainPhase.ChartAreas[0].RecalculateAxesScale();
+                try
+                {
+                    chartGainPhase.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                    chartGainPhase.ChartAreas[0].AxisY.ScaleView.ZoomReset();
+                    chartGainPhase.ChartAreas[0].AxisY2.ScaleView.ZoomReset();
+                    chartGainPhase.ChartAreas[0].RecalculateAxesScale();
+                }
+                catch (Exception ex)
+                {
+                    logService.Error("Failed to Reset Scaleview or Recalculate axis:" + ex.Message);
+                }
             }
             else
             {
@@ -627,11 +654,17 @@ namespace FRA_IMP
                 chartImpedance.ChartAreas[0].AxisY2.MajorGrid.Enabled = false; // TODO: find a solution to make grids match 
                 chartImpedance.ChartAreas[0].AxisY2.MajorGrid.LineColor = lineGridColor;
                 chartImpedance.ChartAreas[0].AxisY2.MajorGrid.LineWidth = 1;
-
-                chartImpedance.ChartAreas[0].AxisX.ScaleView.ZoomReset();
-                chartImpedance.ChartAreas[0].AxisY.ScaleView.ZoomReset();
-                chartImpedance.ChartAreas[0].AxisY2.ScaleView.ZoomReset();
-                chartImpedance.ChartAreas[0].RecalculateAxesScale();
+                try
+                {
+                    chartImpedance.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                    chartImpedance.ChartAreas[0].AxisY.ScaleView.ZoomReset();
+                    chartImpedance.ChartAreas[0].AxisY2.ScaleView.ZoomReset();
+                    chartImpedance.ChartAreas[0].RecalculateAxesScale();
+                }
+                catch (Exception ex)
+                {
+                    logService.Error("Failed to Reset Scaleview or Recalculate axis:" + ex.Message);
+                }
             }
             else
             {
@@ -639,6 +672,7 @@ namespace FRA_IMP
                 chartImpedance.ChartAreas[0].AxisX.Enabled = AxisEnabled.False;
                 chartImpedance.ChartAreas[0].AxisY.Enabled = AxisEnabled.False;
                 chartImpedance.ChartAreas[0].AxisY2.Enabled = AxisEnabled.False;
+
             }
         }
 
@@ -688,10 +722,17 @@ namespace FRA_IMP
             }
             else
             {
-                chartCapacitance.ChartAreas[0].AxisX.IsLogarithmic = false; // when no series are added, the chart component crashes with a log axis
-                chartCapacitance.ChartAreas[0].AxisX.Enabled = AxisEnabled.False;
-                chartCapacitance.ChartAreas[0].AxisY.Enabled = AxisEnabled.False;
-                chartCapacitance.ChartAreas[0].AxisY2.Enabled = AxisEnabled.False;
+                try
+                {
+                    chartCapacitance.ChartAreas[0].AxisX.IsLogarithmic = false; // when no series are added, the chart component crashes with a log axis
+                    chartCapacitance.ChartAreas[0].AxisX.Enabled = AxisEnabled.False;
+                    chartCapacitance.ChartAreas[0].AxisY.Enabled = AxisEnabled.False;
+                    chartCapacitance.ChartAreas[0].AxisY2.Enabled = AxisEnabled.False;
+                }
+                catch (Exception ex)
+                {
+                    logService.Error("Failed to Reset Scaleview or Recalculate axis:" + ex.Message);
+                }
             }
         }
 
@@ -734,10 +775,17 @@ namespace FRA_IMP
                 chartInductance.ChartAreas[0].AxisY2.MajorGrid.LineColor = lineGridColor;
                 chartInductance.ChartAreas[0].AxisY2.MajorGrid.LineWidth = 1;
 
-                chartInductance.ChartAreas[0].AxisX.ScaleView.ZoomReset();
-                chartInductance.ChartAreas[0].AxisY.ScaleView.ZoomReset();
-                chartInductance.ChartAreas[0].AxisY2.ScaleView.ZoomReset();
-                chartInductance.ChartAreas[0].RecalculateAxesScale();
+                try
+                {
+                    chartInductance.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                    chartInductance.ChartAreas[0].AxisY.ScaleView.ZoomReset();
+                    chartInductance.ChartAreas[0].AxisY2.ScaleView.ZoomReset();
+                    chartInductance.ChartAreas[0].RecalculateAxesScale();
+                }
+                catch (Exception ex)
+                {
+                    logService.Error("Failed to Reset Scaleview or Recalculate axis:" + ex.Message);
+                }
             }
             else
             {
@@ -852,7 +900,7 @@ namespace FRA_IMP
         }
         private void ChartZoom(Chart chart, MouseEventArgs e, ref int zoomX, ref int zoomY, ref int zoomY2)
         {
-            if (e.Location.X >=0 && e.Location.Y>=0)
+            if (e.Location.X >= 0 && e.Location.Y >= 0)
             {
                 double zoomFactor = 0.2;   //0 to 1 = 0% to 100% Every Wheel Tick.
 
@@ -959,7 +1007,7 @@ namespace FRA_IMP
                 catch (Exception ex)
                 {
                     logService.Fatal("zooming failed:" + ex.ToString());
-                } 
+                }
             }
         }
 

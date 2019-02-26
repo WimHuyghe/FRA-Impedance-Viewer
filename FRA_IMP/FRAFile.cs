@@ -638,6 +638,13 @@ namespace FRA_IMP
             }
         }
 
+        string m_MeasurmentConditions;
+        public string MeasurementConditions
+        {
+            get { return m_MeasurmentConditions; }
+            set { m_MeasurmentConditions = value; }
+        }
+
         #endregion
 
         #region Series & Series Info
@@ -695,7 +702,7 @@ namespace FRA_IMP
             m_DUTInductanceNanoHenrySeries = CreateLineSerie("Inductance", AxisType.Primary);
 
             foreach (FRAResult result in m_FRAResults) // add results
-            {
+            {            
                 m_GainDBSeries.Points.AddXY(result.FrequencyHz, result.GainFRA_DB);
                 m_PhaseDegreesSeries.Points.AddXY(result.FrequencyHz, result.PhaseDegrees);
                 m_DUTImpedanceMilliOhmSeries.Points.AddXY(result.FrequencyHz, result.DUTImpedanceMilliOhms);

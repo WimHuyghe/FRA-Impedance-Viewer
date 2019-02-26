@@ -119,13 +119,13 @@
   </resheader>
   <data name="richTextBox2.Text" xml:space="preserve">
     <value>I wrote this software in the hope it would achieve the following goals:
-• Analyze capacitors and inductors using a scope that can export Bode plots
+• Analyze capacitors and inductors using a scope that can export and/or record Bode plots
 • Make it easier to compare Bode plots from different sources
 • Have some fun with .Net programming… 
 </value>
   </data>
   <data name="richTextBox1.Text" xml:space="preserve">
-    <value>FRA Impedance Viewer
+    <value>FRA Impedance Viewer &amp; Recorder
 Copyright (C) 2019  Wim Huyghe. This program is free software: you can redistribute it and/or modify it under the terms of the  GNU General Public License as published by the Free Software Foundation, either version 3 of  the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See  the GNU General Public License for more details.

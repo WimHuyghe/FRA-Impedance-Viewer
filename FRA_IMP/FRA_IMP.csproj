@@ -266,6 +266,7 @@
   <ItemGroup>
     <Content Include="FRA4PicoScope.dll" />
     <Content Include="icon_lcr256.ico" />
+    <None Include="Resources\RS.jpg" />
     <None Include="Resources\R&amp;S.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

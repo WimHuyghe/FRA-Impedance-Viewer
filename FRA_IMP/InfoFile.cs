@@ -34,6 +34,7 @@ namespace FRA_IMP
             textBoxMinInductance.Text = file.MinDUTInductanceNanoHenry.ToString(FRAResult.GetInductanceFormat(file.MinDUTInductanceNanoHenry));
             textBoxMax_ESR.Text = file.MaxDUT_ESR_Ohms.ToString(FRAResult.GetImpedanceFormat(file.MaxDUT_ESR_Ohms));
             textBoxMin_ESR.Text = file.MinDUT_ESR_Ohms.ToString(FRAResult.GetImpedanceFormat(file.MinDUT_ESR_Ohms));
+            richTextBoxMeasurementConditions.Text = file.MeasurementConditions;
         }
     }
 }

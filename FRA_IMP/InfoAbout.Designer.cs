@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InfoAbout));
-            this.labelARTA = new System.Windows.Forms.Label();
             this.buttonClose = new System.Windows.Forms.Button();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.richTextBox3 = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -55,19 +55,10 @@
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
-            // labelARTA
-            // 
-            this.labelARTA.AutoSize = true;
-            this.labelARTA.Location = new System.Drawing.Point(7, 16);
-            this.labelARTA.Name = "labelARTA";
-            this.labelARTA.Size = new System.Drawing.Size(175, 13);
-            this.labelARTA.TabIndex = 0;
-            this.labelARTA.Text = "FRA4Picoscope + Keysight Scopes";
-            // 
             // buttonClose
             // 
             this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.buttonClose.Location = new System.Drawing.Point(242, 454);
+            this.buttonClose.Location = new System.Drawing.Point(242, 510);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 3;
@@ -82,19 +73,32 @@
             this.richTextBox2.Location = new System.Drawing.Point(3, 16);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ReadOnly = true;
-            this.richTextBox2.Size = new System.Drawing.Size(548, 67);
+            this.richTextBox2.Size = new System.Drawing.Size(548, 65);
             this.richTextBox2.TabIndex = 0;
             this.richTextBox2.Text = resources.GetString("richTextBox2.Text");
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.labelARTA);
-            this.groupBox4.Location = new System.Drawing.Point(3, 178);
+            this.groupBox4.Controls.Add(this.richTextBox3);
+            this.groupBox4.Location = new System.Drawing.Point(3, 176);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(442, 34);
+            this.groupBox4.Size = new System.Drawing.Size(442, 92);
             this.groupBox4.TabIndex = 4;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Supported Scope & Software Packages";
+            // 
+            // richTextBox3
+            // 
+            this.richTextBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBox3.Location = new System.Drawing.Point(3, 16);
+            this.richTextBox3.Name = "richTextBox3";
+            this.richTextBox3.ReadOnly = true;
+            this.richTextBox3.Size = new System.Drawing.Size(436, 73);
+            this.richTextBox3.TabIndex = 1;
+            this.richTextBox3.Text = "Supported Scope and software pakages:\n•Picoscope (open file FRA4Picoscope) + dire" +
+    "ct measurement \n•Keysight: open CSV files from bode plot function\n•R&S: open CSV" +
+    " file from bode plot function\n";
             // 
             // label1
             // 
@@ -128,7 +132,7 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.tableLayoutPanel2);
-            this.groupBox2.Location = new System.Drawing.Point(3, 95);
+            this.groupBox2.Location = new System.Drawing.Point(3, 93);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(554, 77);
             this.groupBox2.TabIndex = 1;
@@ -219,7 +223,7 @@
             // 
             this.groupBox1.Controls.Add(this.richTextBox1);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(3, 218);
+            this.groupBox1.Location = new System.Drawing.Point(3, 274);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(554, 230);
             this.groupBox1.TabIndex = 0;
@@ -244,7 +248,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(560, 480);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(560, 536);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // groupBox3
@@ -253,7 +257,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(554, 86);
+            this.groupBox3.Size = new System.Drawing.Size(554, 84);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "About";
@@ -262,13 +266,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(560, 480);
+            this.ClientSize = new System.Drawing.Size(560, 536);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "InfoAbout";
             this.Text = "InfoAbout";
             this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
@@ -280,8 +283,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label labelARTA;
         private System.Windows.Forms.Button buttonClose;
         private System.Windows.Forms.RichTextBox richTextBox2;
         private System.Windows.Forms.GroupBox groupBox4;
@@ -299,5 +300,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.RichTextBox richTextBox3;
     }
 }
