@@ -33,20 +33,20 @@ namespace FRA_IMP
         {
             // Input DUT
             foreach (PS_CHANNEL channel in Enum.GetValues(typeof(PS_CHANNEL))) comboBoxInputChannel.Items.Add(channel);
-            comboBoxInputChannel.SelectedItem = FRA4Picoscope.Instance.InputChannel;
+            comboBoxInputChannel.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance,"InputChannel");
             foreach (ATTEN_T atten in Enum.GetValues(typeof(ATTEN_T))) comboBoxInputAttenuation.Items.Add(atten);
-            comboBoxInputAttenuation.SelectedItem = FRA4Picoscope.Instance.InputAttenuation;
+            comboBoxInputAttenuation.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "InputAttenuation");
             foreach (PS_COUPLING coupling in Enum.GetValues(typeof(PS_COUPLING))) comboBoxInputCoupling.Items.Add(coupling);
-            comboBoxInputCoupling.SelectedItem = FRA4Picoscope.Instance.InputCoupling;
+            comboBoxInputCoupling.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "InputCoupling");
             textBoxInputOffset.DataBindings.Add("Text", FRA4Picoscope.Instance, "InputDCOffset");
 
             // Output DUT
             foreach (PS_CHANNEL channel in Enum.GetValues(typeof(PS_CHANNEL))) comboBoxOutputChannel.Items.Add(channel);
-            comboBoxOutputChannel.SelectedItem = FRA4Picoscope.Instance.OutputChannel;
+            comboBoxOutputChannel.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "OutputChannel");
             foreach (ATTEN_T atten in Enum.GetValues(typeof(ATTEN_T))) comboBoxOutputAttenuation.Items.Add(atten);
-            comboBoxOutputAttenuation.SelectedItem = FRA4Picoscope.Instance.OutputAttenuation;
+            comboBoxOutputAttenuation.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "OutputAttenuation");
             foreach (PS_COUPLING coupling in Enum.GetValues(typeof(PS_COUPLING))) comboBoxOutputCoupling.Items.Add(coupling);
-            comboBoxOutputCoupling.SelectedItem = FRA4Picoscope.Instance.OutputCoupling;
+            comboBoxOutputCoupling.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "OutputCoupling");
             textBoxOutputOffset.DataBindings.Add("Text", FRA4Picoscope.Instance, "OutputDCOffset");
 
             // Stimulus
