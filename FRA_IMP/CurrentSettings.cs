@@ -40,7 +40,7 @@ namespace FRA_IMP
 
         private void M_SettingsManager_NewFileLoaded(object sender, WHConsult.Utils.Events.SettingChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         #endregion
