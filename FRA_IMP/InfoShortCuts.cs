@@ -47,9 +47,9 @@ namespace FRA_IMP
             richTextBox1.AppendText("" + Environment.NewLine);
 
             richTextBox1.SelectionFont = new Font(richTextBox1.Font, FontStyle.Bold);
-            richTextBox1.AppendText("Left click on chart legend itemqs:");
+            richTextBox1.AppendText("Left click on chart legend items:");
             richTextBox1.SelectionFont = new Font(richTextBox1.Font, FontStyle.Regular);
-            richTextBox1.AppendText("Change colour, line width or deleted selected file" + Environment.NewLine);  
+            richTextBox1.AppendText("Change colour, line width, rename or delete selected item" + Environment.NewLine);  
         }
     }
 }

@@ -12,7 +12,7 @@ namespace FRA_IMP
         [DllImport("FRA4PicoScope.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern Byte SetScope(string sn);
 
-        [DllImport("FRA4PicoScope.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        [DllImport("FRA4PicoScope.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
         public static extern double GetMinFrequency();
 
         [DllImport("FRA4PicoScope.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]

@@ -22,28 +22,66 @@ namespace FRA_IMP
         {
             InitializeComponent();
             logService = new FileLogService(typeof(MeasurePicoscope));
+            InitForm();
             m_FileCollection = fileCollection;
             m_PicoscopeTimer = new Timer();
             m_PicoscopeTimer.Interval = 1000;
             m_PicoscopeTimer.Tick += M_PicoscopeTimer_Tick;
         }
 
+        private void InitForm()
+        {
+            // Input DUT
+            foreach (PS_CHANNEL channel in Enum.GetValues(typeof(PS_CHANNEL))) comboBoxInputChannel.Items.Add(channel);
+            comboBoxInputChannel.SelectedItem = FRA4Picoscope.Instance.InputChannel;
+            foreach (ATTEN_T atten in Enum.GetValues(typeof(ATTEN_T))) comboBoxInputAttenuation.Items.Add(atten);
+            comboBoxInputAttenuation.SelectedItem = FRA4Picoscope.Instance.InputAttenuation;
+            foreach (PS_COUPLING coupling in Enum.GetValues(typeof(PS_COUPLING))) comboBoxInputCoupling.Items.Add(coupling);
+            comboBoxInputCoupling.SelectedItem = FRA4Picoscope.Instance.InputCoupling;
+            textBoxInputOffset.DataBindings.Add("Text", FRA4Picoscope.Instance, "InputDCOffset");
+
+            // Output DUT
+            foreach (PS_CHANNEL channel in Enum.GetValues(typeof(PS_CHANNEL))) comboBoxOutputChannel.Items.Add(channel);
+            comboBoxOutputChannel.SelectedItem = FRA4Picoscope.Instance.OutputChannel;
+            foreach (ATTEN_T atten in Enum.GetValues(typeof(ATTEN_T))) comboBoxOutputAttenuation.Items.Add(atten);
+            comboBoxOutputAttenuation.SelectedItem = FRA4Picoscope.Instance.OutputAttenuation;
+            foreach (PS_COUPLING coupling in Enum.GetValues(typeof(PS_COUPLING))) comboBoxOutputCoupling.Items.Add(coupling);
+            comboBoxOutputCoupling.SelectedItem = FRA4Picoscope.Instance.OutputCoupling;
+            textBoxOutputOffset.DataBindings.Add("Text", FRA4Picoscope.Instance, "OutputDCOffset");
+
+            // Stimulus
+            textBoxStimulusAmplitude.DataBindings.Add("Text", FRA4Picoscope.Instance, "InitialStimulus");
+            textBoxStimulusOffeset.DataBindings.Add("Text", FRA4Picoscope.Instance, "StimulusOffset");
+
+            // Frequency Sweep
+            textBoxStartFrequency.DataBindings.Add("Text", FRA4Picoscope.Instance, "StartFrequencyHz");
+            textBoxStopFrequency.DataBindings.Add("Text", FRA4Picoscope.Instance, "StopFrequencyHz");
+            textBoxStepsPerDecade.DataBindings.Add("Text", FRA4Picoscope.Instance, "StepsPerDecade");
+
+        }
+
         private void StartMeasurement()
         {
-            this.Cursor = Cursors.WaitCursor;
-            try
+            string checkSettingsResult = FRA4Picoscope.Instance.CheckSettings();
+
+            if (checkSettingsResult.Equals(""))
             {
-                logService.Debug("Measurement started by user...");
-                FRA4Picoscope.Instance.StartMeasurement(100, 1000000, 50);
+                this.Cursor = Cursors.WaitCursor;
+                try
+                {
+                    logService.Debug("Measurement started by user...");
+                    FRA4Picoscope.Instance.StartMeasurement();
+                }
+                catch (Exception ex)
+                {
+                    EndMeasurement();
+                    MessageBox.Show(ex.Message, "Measurement Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                m_MeasurementStarted = true;
+                m_PicoscopeTimer.Enabled = true;
             }
-            catch (Exception ex)
-            {
-                EndMeasurement();
-                MessageBox.Show(ex.Message, "Measurement Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            m_MeasurementStarted = true;
-            m_PicoscopeTimer.Enabled = true;
+            else MessageBox.Show(checkSettingsResult, "Incorrect Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);         
         }
 
         private void CheckMeasurementFinished()
@@ -54,15 +92,18 @@ namespace FRA_IMP
             {
                 logService.Debug("Checking measurement finished..");
                 status = FRA4Picoscope.Instance.GetStatus();
-                messageLog = FRA4Picoscope.Instance.GetMeasruementMessageLog();
+                if (checkBoxStatusEanbled.Checked)
+                {
+                    messageLog = FRA4Picoscope.Instance.GetMeasruementMessageLog();
+                    richTextBoxMessageLog.AppendText(messageLog);
+                }
             }
             catch (Exception ex)
             {
                 EndMeasurement();
                 MessageBox.Show(ex.Message, "Measurement Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
-            richTextBoxMessageLog.AppendText(messageLog);
+            }        
             if (status != FRA_STATUS_T.FRA_STATUS_IN_PROGRESS) ProcessMeasurementResults();  
         }
 
@@ -83,6 +124,7 @@ namespace FRA_IMP
             EndMeasurement();
             m_FileCollection.Add(new FRAFile(FRAFileType.FRA4PicoScope, frequenciesLogHz, gainsDb, phasesDegrees, 1000));
             this.Cursor = Cursors.Default;
+            this.Close();
         }
 
         private void AbortMeaurement()

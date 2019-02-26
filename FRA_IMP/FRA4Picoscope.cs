@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,7 +11,7 @@ using WHConsult.Utils.Settings.IniFiles;
 
 namespace FRA_IMP
 {
-    public class FRA4Picoscope: IDisposable
+    public class FRA4Picoscope : IDisposable
     {
         private ISettingsManager m_SettingsManager;
         private ILogService logService;
@@ -38,20 +39,68 @@ namespace FRA_IMP
 
         private void ConnectPicoscope()
         {
+            logService.Info("Connecting Picoscope...");
             byte result = FRA4PicoscopeAPI.Initialize();
             if (result != 1) HandlePicoException("Failed to initialize Picoscope API: " + result.ToString());
             else logService.Info("Picoscope API succesfully initialized");
-        
-            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.FRA_PROGRESS, false);
-            FRA4PicoscopeAPI.SetLogVerbosityFlags(LOG_MESSAGE_FLAGS_T.FRA_PROGRESS);
             FRA4PicoscopeAPI.EnableMessageLog(true);
-            FRA4PicoscopeAPI.AutoClearMessageLog(false);
+            FRA4PicoscopeAPI.AutoClearMessageLog(true);
 
-            result = FRA4PicoscopeAPI.SetScope("");
+            result = FRA4PicoscopeAPI.SetScope(""); // TODO: add SN to directly connect to previous scope (currently API does not support reading SN)
             if (result != 1) HandlePicoException("Failed to select Picoscope: " + result.ToString());
             else logService.Info("Picoscope succesfully selected");
 
             scopeConnected = true;
+        }
+
+        private void SetLogVerbosity()
+        {
+            logService.Debug("Setting Log Verbosity...");
+            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.SCOPE_ACCESS_DIAGNOSTICS, LogScopeAccessDiagnostics);
+            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.FRA_PROGRESS, LogFRAProgress);
+            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.STEP_TRIAL_PROGRESS, LogStepTrailProgress);
+            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.SIGNAL_GENERATOR_DIAGNOSTICS, LogSignalGeneratorDiagnostics);
+            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.AUTORANGE_DIAGNOSTICS, LogAutoRangeDiagnostics);
+            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.ADAPTIVE_STIMULUS_DIAGNOSTICS, LogAdapticeStimulusDiagnostics);
+            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.SAMPLE_PROCESSING_DIAGNOSTICS, LogSampleProcessingDiagnostics);
+            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.DFT_DIAGNOSTICS, LogDFTDiagnostics);
+            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.SCOPE_POWER_EVENTS, LogScopePowerEvents);
+            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.SAVE_EXPORT_STATUS, LogSaveExportStatus);
+            FRA4PicoscopeAPI.SetLogVerbosityFlag(LOG_MESSAGE_FLAGS_T.FRA_WARNING, LogFRAWarnings);
+        }
+
+        public string CheckSettings()
+        {
+            StringWriter result = new StringWriter();
+            if (!scopeConnected) ConnectPicoscope(); // must be connected to check the min frequency
+            double minFrequency = FRA4PicoscopeAPI.GetMinFrequency();
+            if (StartFrequencyHz < minFrequency) result.WriteLine("Start frequency must be higher than " + minFrequency + " Hz");
+            if (StopFrequencyHz < minFrequency) result.WriteLine("Stop frequency must be higher than " + minFrequency + " Hz");
+            if (StartFrequencyHz > StopFrequencyHz) result.WriteLine("Start frequency must be higher than Stop frequency !");
+            if (InputChannel == OutputChannel) result.WriteLine("Input channel and output channel cannot be identical");
+            if (InitialStimulus > MaxStimulus) result.WriteLine("Initial Stimulus must be smaller than max stimulus");
+            if (StepsPerDecade < 1) result.WriteLine("Steps per decade must be greater than zero!");
+            if (PhaseWrappingThreshold <= 0) result.WriteLine("Phase wrapping threshold must be greater than zero!");
+            
+            if (!result.ToString().Equals("")) logService.Warn("Settings incorrect:" + result.ToString());
+            return result.ToString();
+        }
+
+        private void SetFRASettings()
+        {
+            logService.Debug("Setting FRA Settings...");
+            byte stimulusMode = 0;
+            if (AdaptiveStimulusMode) stimulusMode = 1;
+            byte sweepDec = 0;
+            if (SweepDescending) sweepDec = 1;
+            FRA4PicoscopeAPI.SetFraSettings(SamplingMode, stimulusMode, TargetResponseAmplitude, sweepDec, PhaseWrappingThreshold);
+        }
+
+        private void SetFRATuning()
+        {
+            logService.Debug("Setting FRA Tuning...");
+            FRA4PicoscopeAPI.SetFraTuning(PurityLowerLimit, ExtraSettlingTimeMs, AutoRangeTriesPerStep, AutoRangeTolerance, SmallSignalResolutionTolerance, MaxAutorangeAmplitude,
+                InputStartRange, OutputStartRange, AdaptiveStimulusTriesPerStep, TargetResponseAmplitudeTolerance, MinCyclesCaptured, MaxDftBandWidth, LowNoiseOversampling);
         }
 
         private void SetUpChannels()
@@ -64,24 +113,17 @@ namespace FRA_IMP
                 InitialStimulus, MaxStimulus, StimulusOffset);
             if (result != 1) HandlePicoException("Failed to setup channels and stimulus: " + result.ToString());
             else logService.Info("Picoscope channels and stimulus succesfully setup");
-
         }
 
-        public void StartMeasurement(double startFrequencyHz, double stopFrequencyHz, int stepsPerDecade)
+        public void StartMeasurement()
         {
-            if (!scopeConnected)
-            {
-                logService.Info("Connecting Picoscope...");
-                ConnectPicoscope();        
-            }
-            logService.Info("Setting up Picoscope channels...");
+            if (!scopeConnected) ConnectPicoscope();
+            string checkSettingsResult = CheckSettings();
+            if (!checkSettingsResult.Equals("")) throw new ApplicationException(checkSettingsResult);
+            SetLogVerbosity();
             SetUpChannels();
-
-            //store settings
-            this.StartFrequencyHz = startFrequencyHz;
-            this.StopFrequencyHz = stopFrequencyHz;
-            this.StepsPerDecade = stepsPerDecade;
-
+            SetFRASettings();
+            SetFRATuning();
             logService.Debug("Starting Picoscope measurement...");
             byte result = FRA4PicoscopeAPI.StartFRA(StartFrequencyHz, StopFrequencyHz, StepsPerDecade);
             if (result != 1) HandlePicoException("Failed to record plot: " + result.ToString());
@@ -130,12 +172,12 @@ namespace FRA_IMP
 
                 FRA4PicoscopeAPI.GetResults(frequenciesLogHz, gainsDB, wrappedPhaseDegrees, phasesDegrees);
                 logService.Info("Picoscope Results succesfully collected:" + numOfSteps.ToString());
-               
+
             }
             else
             {
                 HandlePicoException("Plot record was not completed succesfully: " + status.ToString());
-            }        
+            }
         }
 
         #region IDisposable
@@ -166,7 +208,7 @@ namespace FRA_IMP
         {
             Dispose(false);
 
-        } 
+        }
 
         #endregion
 
@@ -256,6 +298,189 @@ namespace FRA_IMP
             set { m_SettingsManager.SetIntValue("StepsPerDecade", value); }
         }
 
+        public SamplingMode_T SamplingMode
+        {
+            get { return (SamplingMode_T)Enum.Parse(typeof(SamplingMode_T), (m_SettingsManager.GetStringValue("SamplingMode", SamplingMode_T.LOW_NOISE.ToString()))); }
+            set { m_SettingsManager.SetStringValue("SamplingMode", value.ToString()); }
+        }
+
+        public bool AdaptiveStimulusMode
+        {
+            get { return m_SettingsManager.GetBooleanValue("AdaptiveStimulusMode", false); }
+            set { m_SettingsManager.SetBooleanValue("AdaptiveStimulusMode", value); }
+        }
+
+        public bool SweepDescending
+        {
+            get { return m_SettingsManager.GetBooleanValue("SweepDescending", false); }
+            set { m_SettingsManager.SetBooleanValue("SweepDescending", value); }
+        }
+
+        public double TargetResponseAmplitude
+        {
+            get { return m_SettingsManager.GetDoubleValue("TargetResponseAmplitude", 0.0); }
+            set { m_SettingsManager.SetDoubleValue("TargetResponseAmplitude", value); }
+        }
+
+        public double PhaseWrappingThreshold
+        {
+            get { return m_SettingsManager.GetDoubleValue("PhaseWrappingThreshold", 180.0); }
+            set { m_SettingsManager.SetDoubleValue("PhaseWrappingThreshold", value); }
+        }
+
+        public double PurityLowerLimit
+        {
+            get { return m_SettingsManager.GetDoubleValue("PurityLowerLimit", 0.80); }
+            set { m_SettingsManager.SetDoubleValue("PurityLowerLimit", value); }
+        }
+
+        public int ExtraSettlingTimeMs
+        {
+            get { return m_SettingsManager.GetIntValue("ExtraSettlingTimeMs", 0); }
+            set { m_SettingsManager.SetIntValue("ExtraSettlingTimeMs", value); }
+        }
+
+        public byte AutoRangeTriesPerStep
+        {
+            get { return m_SettingsManager.GetByteValue("AutoRangeTriesPerStep", 10); }
+            set { m_SettingsManager.SetByteValue("AutoRangeTriesPerStep", value); }
+        }
+
+        public double AutoRangeTolerance
+        {
+            get { return m_SettingsManager.GetDoubleValue("AutoRangeTolerance", 0.10); }
+            set { m_SettingsManager.SetDoubleValue("AutoRangeTolerance", value); }
+        }
+
+        public double SmallSignalResolutionTolerance
+        {
+            get { return m_SettingsManager.GetDoubleValue("SmallSignalResolutionTolerance", 0.0); }
+            set { m_SettingsManager.SetDoubleValue("SmallSignalResolutionTolerance", value); }
+        }
+
+        public double MaxAutorangeAmplitude
+        {
+            get { return m_SettingsManager.GetDoubleValue("MaxAutorangeAmplitude", 1.0); }
+            set { m_SettingsManager.SetDoubleValue("MaxAutorangeAmplitude", value); }
+        }
+
+        public int InputStartRange
+        {
+            get { return m_SettingsManager.GetIntValue("InputStartRange", -1); }
+            set { m_SettingsManager.SetIntValue("InputStartRange", value); }
+        }
+
+        public int OutputStartRange
+        {
+            get { return m_SettingsManager.GetIntValue("OutputStartRange", 0); }
+            set { m_SettingsManager.SetIntValue("OutputStartRange", value); }
+        }
+
+        public byte AdaptiveStimulusTriesPerStep
+        {
+            get { return m_SettingsManager.GetByteValue("AdaptiveStimulusTriesPerStep", 10); }
+            set { m_SettingsManager.SetByteValue("AdaptiveStimulusTriesPerStep", value); }
+        }
+
+        public double TargetResponseAmplitudeTolerance
+        {
+            get { return m_SettingsManager.GetDoubleValue("TargetResponseAmplitudeTolerance", 0.1); }//=10%
+            set { m_SettingsManager.SetDoubleValue("TargetResponseAmplitudeTolerance", value); }
+        }
+
+        public int MinCyclesCaptured
+        {
+            get { return m_SettingsManager.GetIntValue("MinCyclesCaptured", 16); }
+            set { m_SettingsManager.SetIntValue("MinCyclesCaptured", value); }
+        }
+
+        public double MaxDftBandWidth
+        {
+            get { return m_SettingsManager.GetDoubleValue("MaxDftBandWidth", 100); }//=10%
+            set { m_SettingsManager.SetDoubleValue("MaxDftBandWidth", value); }
+        }
+
+        public int LowNoiseOversampling
+        {
+            get { return m_SettingsManager.GetIntValue("LowNoiseOversampling", 64); }
+            set { m_SettingsManager.SetIntValue("LowNoiseOversampling", value); }
+        }
+
+        public bool LogScopeAccessDiagnostics
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogScopeAccessDiagnostics", false); }
+            set { m_SettingsManager.SetBooleanValue("LogScopeAccessDiagnostics", value); }
+        }
+
+        public bool LogFRAProgress
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogFRAProgress", true); }
+            set { m_SettingsManager.SetBooleanValue("LogFRAProgress", value); }
+        }
+
+        public bool LogStepTrailProgress
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogStepTrailProgress", true); }
+            set { m_SettingsManager.SetBooleanValue("LogStepTrailProgress", value); }
+        }
+
+        public bool LogSignalGeneratorDiagnostics
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogSignalGeneratorDiagnostics", false); }
+            set { m_SettingsManager.SetBooleanValue("LogSignalGeneratorDiagnostics", value); }
+        }
+
+        public bool LogAutoRangeDiagnostics
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogAutoRangeDiagnostics", false); }
+            set { m_SettingsManager.SetBooleanValue("LogAutoRangeDiagnostics", value); }
+        }
+
+        public bool LogAdapticeStimulusDiagnostics
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogAdapticeStimulusDiagnostics", false); }
+            set { m_SettingsManager.SetBooleanValue("LogAdapticeStimulusDiagnostics", value); }
+        }
+
+        public bool LogSampleProcessingDiagnostics
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogSampleProcessingDiagnostics", false); }
+            set { m_SettingsManager.SetBooleanValue("LogSampleProcessingDiagnostics", value); }
+        }
+
+        public bool LogDFTDiagnostics
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogDFTDiagnostics", false); }
+            set { m_SettingsManager.SetBooleanValue("LogDFTDiagnostics", value); }
+        }
+
+        public bool LogScopePowerEvents
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogScopePowerEvents", true); }
+            set { m_SettingsManager.SetBooleanValue("LogScopePowerEvents", value); }
+        }
+
+        public bool LogSaveExportStatus
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogSaveExportStatus", true); }
+            set { m_SettingsManager.SetBooleanValue("LogSaveExportStatus", value); }
+        }
+
+        public bool LogFRAWarnings
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogFRAWarnings", true); }
+            set { m_SettingsManager.SetBooleanValue("LogFRAWarnings", value); }
+        }
+
+        // TODO: currently not forseen in enum, but is available in FRA4Picoscope
+        public bool LogPicoscopeAPICalls
+        {
+            get { return m_SettingsManager.GetBooleanValue("LogPicoscopeAPICalls", false); }
+            set { m_SettingsManager.SetBooleanValue("LogPicoscopeAPICalls", value); }
+        }
+
+        #endregion
+
         private void HandlePicoException(string message)
         {
             logService.Error(message);
@@ -263,8 +488,6 @@ namespace FRA_IMP
             scopeConnected = false;
             throw new ApplicationException(message);
         }
-
-        #endregion
     }
 
     #region Enuums
