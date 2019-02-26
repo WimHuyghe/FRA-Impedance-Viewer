@@ -501,7 +501,7 @@ namespace FRA_IMP
             get
             {
                 bool result = false;
-                foreach (FRAFile file in m_Files) if (file.FilePath.Equals("")) result = true;
+                foreach (FRAFile file in m_Files) if (!file.IsSavedFile) result = true;
                 return result;
             }
         }

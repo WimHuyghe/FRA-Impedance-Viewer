@@ -353,6 +353,11 @@ namespace FRA_IMP
             }
         }
 
+        public bool IsSavedFile
+        {
+            get { return !FilePath.Equals(""); }
+        }
+
         private DateTime m_DateTimeCreated;
         public DateTime DateTimeCreated
         {

@@ -73,19 +73,19 @@
             this.richTextBox2.Location = new System.Drawing.Point(3, 16);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ReadOnly = true;
-            this.richTextBox2.Size = new System.Drawing.Size(548, 65);
+            this.richTextBox2.Size = new System.Drawing.Size(548, 91);
             this.richTextBox2.TabIndex = 0;
             this.richTextBox2.Text = resources.GetString("richTextBox2.Text");
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.richTextBox3);
-            this.groupBox4.Location = new System.Drawing.Point(3, 176);
+            this.groupBox4.Location = new System.Drawing.Point(3, 202);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(442, 92);
+            this.groupBox4.Size = new System.Drawing.Size(442, 66);
             this.groupBox4.TabIndex = 4;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Supported Scope & Software Packages";
+            this.groupBox4.Text = "Supported Scopes and Software Packages";
             // 
             // richTextBox3
             // 
@@ -94,11 +94,10 @@
             this.richTextBox3.Location = new System.Drawing.Point(3, 16);
             this.richTextBox3.Name = "richTextBox3";
             this.richTextBox3.ReadOnly = true;
-            this.richTextBox3.Size = new System.Drawing.Size(436, 73);
+            this.richTextBox3.Size = new System.Drawing.Size(436, 47);
             this.richTextBox3.TabIndex = 1;
-            this.richTextBox3.Text = "Supported Scope and software pakages:\n•Picoscope (open file FRA4Picoscope) + dire" +
-    "ct measurement \n•Keysight: open CSV files from bode plot function\n•R&S: open CSV" +
-    " file from bode plot function\n";
+            this.richTextBox3.Text = "•Picoscope (open file FRA4Picoscope) + direct measurement \n•Keysight: open CSV fi" +
+    "les from bode plot function\n•R&S: open CSV file from bode plot function\n";
             // 
             // label1
             // 
@@ -132,7 +131,7 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.tableLayoutPanel2);
-            this.groupBox2.Location = new System.Drawing.Point(3, 93);
+            this.groupBox2.Location = new System.Drawing.Point(3, 119);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(554, 77);
             this.groupBox2.TabIndex = 1;
@@ -257,7 +256,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(554, 84);
+            this.groupBox3.Size = new System.Drawing.Size(554, 110);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "About";

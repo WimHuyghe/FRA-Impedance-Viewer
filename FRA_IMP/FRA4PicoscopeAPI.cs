@@ -64,7 +64,7 @@ namespace FRA_IMP
 
         [DllImport("FRA4PicoScope.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
         //[return: MarshalAs(UnmanagedType.LPWStr)]
-        public static extern string GetMessageLog();
+        public static extern IntPtr GetMessageLog();
 
         [DllImport("FRA4PicoScope.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern void ClearMessageLog();

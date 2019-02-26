@@ -80,7 +80,6 @@
             this.label19 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.checkBoxStatusEanbled = new System.Windows.Forms.CheckBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel13 = new System.Windows.Forms.TableLayoutPanel();
@@ -88,6 +87,8 @@
             this.label21 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.comboBoxSweepDirection = new System.Windows.Forms.ComboBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.checkBoxCloseFormWhenFinished = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -130,7 +131,7 @@
             // 
             // richTextBoxMessageLog
             // 
-            this.richTextBoxMessageLog.Cursor = System.Windows.Forms.Cursors.AppStarting;
+            this.richTextBoxMessageLog.Cursor = System.Windows.Forms.Cursors.Default;
             this.richTextBoxMessageLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBoxMessageLog.Location = new System.Drawing.Point(3, 16);
             this.richTextBoxMessageLog.Name = "richTextBoxMessageLog";
@@ -681,16 +682,6 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Status";
             // 
-            // checkBoxStatusEanbled
-            // 
-            this.checkBoxStatusEanbled.AutoSize = true;
-            this.checkBoxStatusEanbled.Location = new System.Drawing.Point(567, 428);
-            this.checkBoxStatusEanbled.Name = "checkBoxStatusEanbled";
-            this.checkBoxStatusEanbled.Size = new System.Drawing.Size(107, 17);
-            this.checkBoxStatusEanbled.TabIndex = 8;
-            this.checkBoxStatusEanbled.Text = "EnableStatusLog";
-            this.checkBoxStatusEanbled.UseVisualStyleBackColor = true;
-            // 
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.tableLayoutPanel11);
@@ -771,13 +762,34 @@
             this.comboBoxSweepDirection.Size = new System.Drawing.Size(121, 21);
             this.comboBoxSweepDirection.TabIndex = 10;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(567, 423);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(129, 23);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "Define Status Verbosity";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // checkBoxCloseFormWhenFinished
+            // 
+            this.checkBoxCloseFormWhenFinished.AutoSize = true;
+            this.checkBoxCloseFormWhenFinished.Location = new System.Drawing.Point(291, 427);
+            this.checkBoxCloseFormWhenFinished.Name = "checkBoxCloseFormWhenFinished";
+            this.checkBoxCloseFormWhenFinished.Size = new System.Drawing.Size(162, 17);
+            this.checkBoxCloseFormWhenFinished.TabIndex = 9;
+            this.checkBoxCloseFormWhenFinished.Text = "Close Window when finished";
+            this.checkBoxCloseFormWhenFinished.UseVisualStyleBackColor = true;
+            // 
             // MeasurePicoscope
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1114, 457);
+            this.Controls.Add(this.checkBoxCloseFormWhenFinished);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox6);
-            this.Controls.Add(this.checkBoxStatusEanbled);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -875,7 +887,6 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.CheckBox checkBoxStatusEanbled;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel11;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel13;
@@ -884,5 +895,7 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.ComboBox comboBoxSweepDirection;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox checkBoxCloseFormWhenFinished;
     }
 }

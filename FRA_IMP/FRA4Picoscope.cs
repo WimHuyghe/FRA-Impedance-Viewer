@@ -44,7 +44,7 @@ namespace FRA_IMP
             if (result != 1) HandlePicoException("Failed to initialize Picoscope API: " + result.ToString());
             else logService.Info("Picoscope API succesfully initialized");
             FRA4PicoscopeAPI.EnableMessageLog(true);
-            FRA4PicoscopeAPI.AutoClearMessageLog(true);
+            FRA4PicoscopeAPI.AutoClearMessageLog(false);
 
             result = FRA4PicoscopeAPI.SetScope(""); // TODO: add SN to directly connect to previous scope (currently API does not support reading SN)
             if (result != 1) HandlePicoException("Failed to select Picoscope: " + result.ToString());
@@ -72,7 +72,7 @@ namespace FRA_IMP
         public string CheckSettings()
         {
             StringWriter result = new StringWriter();
-            if(TestJigReferenceResistor<0) result.WriteLine("Test Jig Reference resistor cannot be negative!");
+            if (TestJigReferenceResistor < 0) result.WriteLine("Test Jig Reference resistor cannot be negative!");
 
             if (!scopeConnected) ConnectPicoscope(); // must be connected to check the min frequency
             double minFrequency = FRA4PicoscopeAPI.GetMinFrequency();
@@ -80,10 +80,11 @@ namespace FRA_IMP
             if (StopFrequencyHz < minFrequency) result.WriteLine("Stop frequency must be higher than " + minFrequency + " Hz");
             if (StartFrequencyHz > StopFrequencyHz) result.WriteLine("Start frequency must be higher than Stop frequency !");
             if (InputDUTChannel == OutputDUTChannel) result.WriteLine("Input channel and output channel cannot be identical");
-            if (InitialStimulus > MaxStimulus) result.WriteLine("Initial Stimulus must be smaller than max stimulus");
+            if (InitialStimulus < 0) result.WriteLine("Initial Stimulus cannot be negative");
+            //if (InitialStimulus > MaxStimulus) result.WriteLine("Initial Stimulus must be smaller than max stimulus");
             if (StepsPerDecade < 1) result.WriteLine("Steps per decade must be greater than zero!");
             if (PhaseWrappingThreshold <= 0) result.WriteLine("Phase wrapping threshold must be greater than zero!");
-            
+
             if (!result.ToString().Equals("")) logService.Warn("Settings incorrect:" + result.ToString());
             return result.ToString();
         }
@@ -122,6 +123,7 @@ namespace FRA_IMP
             if (!scopeConnected) ConnectPicoscope();
             string checkSettingsResult = CheckSettings();
             if (!checkSettingsResult.Equals("")) throw new ApplicationException(checkSettingsResult);
+            FRA4PicoscopeAPI.ClearMessageLog();
             SetLogVerbosity();
             SetUpChannels();
             SetFRASettings();
@@ -134,8 +136,8 @@ namespace FRA_IMP
 
         public string GetMeasruementMessageLog()
         {
-            string log = FRA4PicoscopeAPI.GetMessageLog();
-            logService.Debug("Message log:" + log);
+            string log = Marshal.PtrToStringUni(FRA4PicoscopeAPI.GetMessageLog());
+            FRA4PicoscopeAPI.ClearMessageLog();
             return log;
         }
 
@@ -192,7 +194,7 @@ namespace FRA_IMP
 
         public string MeasurementConditionsSummary()
         {
-            using (StringWriter result= new StringWriter())
+            using (StringWriter result = new StringWriter())
             {
                 result.WriteLine("Input DUT=> Scope Channel: " + InputDUTChannel.ToString() + " Coupling: " + InputDUTCoupling.ToString() + "  Attenuation: "
                     + InputDUTAttenuation.ToString() + " DC Offset: " + InputDUTDCOffset.ToString() + "V");
@@ -477,6 +479,12 @@ namespace FRA_IMP
             set { m_SettingsManager.SetBooleanValue("LogFRAWarnings", value); }
         }
 
+        public bool AutoClosePicoFormWhenFinished
+        {
+            get { return m_SettingsManager.GetBooleanValue("AutoClosePicoFormWhenFinished", true); }
+            set { m_SettingsManager.SetBooleanValue("AutoClosePicoFormWhenFinished", value); }
+        }
+
         // TODO: currently not forseen in enum, but is available in FRA4Picoscope
         public bool LogPicoscopeAPICalls
         {
@@ -513,9 +521,8 @@ namespace FRA_IMP
         ~FRA4Picoscope()
         {
             Dispose(false);
-
         }
 
         #endregion  
-    }  
+    }
 }

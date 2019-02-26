@@ -343,9 +343,15 @@ namespace FRA_IMP
         {
             if (m_LegendItem != null)
             {
-                logService.Info("Remove series from chart: " + m_LegendItem.SeriesName);
-                Series serie = GetDisplayedChart().Series[m_LegendItem.SeriesName];
-                m_Files.Remove((FRAFile)serie.Tag);
+                DialogResult dialogResult = MessageBox.Show("Unsaved Measurements will be lost, do you want to continue", "Unsaved Measurements!", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    logService.Info("Remove series from chart: " + m_LegendItem.SeriesName);
+                    Series serie = GetDisplayedChart().Series[m_LegendItem.SeriesName];
+                    m_Files.Remove((FRAFile)serie.Tag);
+                    return;
+                }
+                else return;             
             }
         }
 

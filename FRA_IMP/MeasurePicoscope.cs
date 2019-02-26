@@ -25,7 +25,7 @@ namespace FRA_IMP
             InitForm();
             m_FileCollection = fileCollection;
             m_PicoscopeTimer = new Timer();
-            m_PicoscopeTimer.Interval = 1000;
+            m_PicoscopeTimer.Interval = 500;
             m_PicoscopeTimer.Tick += M_PicoscopeTimer_Tick;
         }
 
@@ -33,7 +33,7 @@ namespace FRA_IMP
         {
             // Input DUT = Output generator
             foreach (PS_CHANNEL channel in Enum.GetValues(typeof(PS_CHANNEL))) comboBoxInputChannel.Items.Add(channel);
-            comboBoxInputChannel.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance,"InputDUTChannel");
+            comboBoxInputChannel.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "InputDUTChannel");
             foreach (ATTEN_T atten in Enum.GetValues(typeof(ATTEN_T))) comboBoxInputAttenuation.Items.Add(atten);
             comboBoxInputAttenuation.DataBindings.Add("SelectedItem", FRA4Picoscope.Instance, "InputDUTAttenuation");
             foreach (PS_COUPLING coupling in Enum.GetValues(typeof(PS_COUPLING))) comboBoxInputCoupling.Items.Add(coupling);
@@ -62,18 +62,21 @@ namespace FRA_IMP
 
             // Test Jig
             textBoxReferenceResistor.DataBindings.Add("Text", FRA4Picoscope.Instance, "TestJigReferenceResistor");
+
+            //  Other
+            checkBoxCloseFormWhenFinished.DataBindings.Add("Checked", FRA4Picoscope.Instance, "AutoClosePicoFormWhenFinished");
         }
 
         private void StartMeasurement()
         {
-            string checkSettingsResult = FRA4Picoscope.Instance.CheckSettings();
-
+            this.UseWaitCursor = true;
+            string checkSettingsResult = FRA4Picoscope.Instance.CheckSettings(); // check settings already connects to scope, so show wait cursor before
             if (checkSettingsResult.Equals(""))
             {
-                this.Cursor = Cursors.WaitCursor;
                 try
                 {
                     logService.Debug("Measurement started by user...");
+                    richTextBoxMessageLog.Clear();
                     FRA4Picoscope.Instance.StartMeasurement();
                 }
                 catch (Exception ex)
@@ -85,30 +88,36 @@ namespace FRA_IMP
                 m_MeasurementStarted = true;
                 m_PicoscopeTimer.Enabled = true;
             }
-            else MessageBox.Show(checkSettingsResult, "Incorrect Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);         
+            else
+            {
+                this.UseWaitCursor = false;
+                MessageBox.Show(checkSettingsResult, "Incorrect Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void CheckMeasurementFinished()
         {
-            FRA_STATUS_T status;
-            string messageLog;
+            FRA_STATUS_T status;            
             try
             {
                 logService.Debug("Checking measurement finished..");
                 status = FRA4Picoscope.Instance.GetStatus();
-                if (checkBoxStatusEanbled.Checked)
-                {
-                    messageLog = FRA4Picoscope.Instance.GetMeasruementMessageLog();
-                    richTextBoxMessageLog.AppendText(messageLog);
-                }
+                UpdateMessageLog();
             }
             catch (Exception ex)
             {
                 EndMeasurement();
                 MessageBox.Show(ex.Message, "Measurement Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }        
-            if (status != FRA_STATUS_T.FRA_STATUS_IN_PROGRESS) ProcessMeasurementResults();  
+            }
+            if (status != FRA_STATUS_T.FRA_STATUS_IN_PROGRESS) ProcessMeasurementResults();
+        }
+
+        private void UpdateMessageLog()
+        {
+            string messageLog = FRA4Picoscope.Instance.GetMeasruementMessageLog();
+            richTextBoxMessageLog.Focus(); //must be focussed to scroll down automatically
+            richTextBoxMessageLog.AppendText(messageLog);
         }
 
         private void ProcessMeasurementResults()
@@ -122,7 +131,7 @@ namespace FRA_IMP
             catch (Exception ex)
             {
                 EndMeasurement();
-                MessageBox.Show(ex.Message, "Measurement Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);             
+                MessageBox.Show(ex.Message, "Measurement Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             EndMeasurement();
@@ -130,7 +139,7 @@ namespace FRA_IMP
             measurementResult.MeasurementConditions = FRA4Picoscope.Instance.MeasurementConditionsSummary();
             m_FileCollection.Add(measurementResult);
             this.Cursor = Cursors.Default;
-            this.Close();
+            if (FRA4Picoscope.Instance.AutoClosePicoFormWhenFinished) this.Close();
         }
 
         private void AbortMeaurement()
@@ -144,7 +153,8 @@ namespace FRA_IMP
         {
             m_MeasurementStarted = false;
             m_PicoscopeTimer.Enabled = false;
-            this.Cursor = Cursors.Default;
+            UpdateMessageLog();
+            this.UseWaitCursor = false;
         }
 
         private void buttonStartMeasurement_Click(object sender, EventArgs e)
@@ -163,5 +173,10 @@ namespace FRA_IMP
             else m_PicoscopeTimer.Enabled = false;
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Form statusVerbosity = new StatusVerbosity();
+            statusVerbosity.Show();
+        }
     }
 }
