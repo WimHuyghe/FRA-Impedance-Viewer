@@ -229,7 +229,7 @@ namespace FRA_IMP
 
         private void fRA4PicoScopeFileToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            NewFRA_File(FRAFileType.FRA4PicoScope);
+            AddFRA_File(FRAFileType.FRA4PicoScope);
         }
 
         private void keysightFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -351,7 +351,7 @@ namespace FRA_IMP
                     m_Files.Remove((FRAFile)serie.Tag);
                     return;
                 }
-                else return;             
+                else return;
             }
         }
 
@@ -1079,12 +1079,17 @@ namespace FRA_IMP
                 else
                 {
                     //show info based on cursor
-                    string sFrequency = "Frequency: " + frequency.ToString(FRAResult.GetFrequencyFormat(frequency, m_logFrequencyAxis));
-                    double gain = chartGainPhase.ChartAreas[0].AxisY.PixelPositionToValue(mousePoint.Y);
-                    string sGain = "        Gain: " + gain.ToString(FRAResult.GetGainFormat(gain));
-                    double phase = chartGainPhase.ChartAreas[0].AxisY2.PixelPositionToValue(mousePoint.Y);
-                    string sPhase = "        Phase: " + phase.ToString(FRAResult.GetPhaseFormat(phase));
-                    chartGainPhase.ChartAreas[0].AxisX.Title = sFrequency + sGain + sPhase + "      (CURSOR)";
+                    using (StringWriter writer = new StringWriter())
+                    {
+                        writer.Write("Frequency: " + frequency.ToString(FRAResult.GetFrequencyFormat(frequency, m_logFrequencyAxis)));
+                        double gain = chartGainPhase.ChartAreas[0].AxisY.PixelPositionToValue(mousePoint.Y);
+                        writer.Write("        Gain: " + gain.ToString(FRAResult.GetGainFormat(gain)));
+                        double phase = chartGainPhase.ChartAreas[0].AxisY2.PixelPositionToValue(mousePoint.Y);
+                        writer.Write("        Phase: " + phase.ToString(FRAResult.GetPhaseFormat(phase)));
+                        writer.Write("      (CURSOR)");
+                        for (int i = 0; i < m_Files.Count; i++) writer.WriteLine(); // same number of lines as normally shown
+                        chartGainPhase.ChartAreas[0].AxisX.Title = writer.ToString();
+                    }
                 }
             }
             else
@@ -1117,12 +1122,17 @@ namespace FRA_IMP
                 else
                 {
                     //show info based on cursor
-                    string sFrequency = "Frequency: " + frequency.ToString(FRAResult.GetFrequencyFormat(frequency, m_logFrequencyAxis));
-                    double impedance = chartImpedance.ChartAreas[0].AxisY.PixelPositionToValue(mousePoint.Y);
-                    string sImpedance = "        Impedance: " + impedance.ToString(FRAResult.GetImpedanceFormat(impedance));
-                    double phase = chartImpedance.ChartAreas[0].AxisY2.PixelPositionToValue(mousePoint.Y);
-                    string sPhase = "        Phase: " + phase.ToString(FRAResult.GetPhaseFormat(phase));
-                    chartImpedance.ChartAreas[0].AxisX.Title = sFrequency + sImpedance + sPhase + "      (CURSOR)";
+                    using (StringWriter writer = new StringWriter())
+                    {
+                        writer.Write("Frequency: " + frequency.ToString(FRAResult.GetFrequencyFormat(frequency, m_logFrequencyAxis)));
+                        double impedance = chartImpedance.ChartAreas[0].AxisY.PixelPositionToValue(mousePoint.Y);
+                        writer.Write("        Impedance: " + impedance.ToString(FRAResult.GetImpedanceFormat(impedance)));
+                        double phase = chartImpedance.ChartAreas[0].AxisY2.PixelPositionToValue(mousePoint.Y);
+                        writer.Write("        Phase: " + phase.ToString(FRAResult.GetPhaseFormat(phase)));
+                        writer.Write("      (CURSOR)");
+                        for (int i = 0; i < m_Files.Count; i++) writer.WriteLine(); // same number of lines as normally shown
+                        chartImpedance.ChartAreas[0].AxisX.Title = writer.ToString();
+                    }
                 }
             }
             else
@@ -1154,12 +1164,17 @@ namespace FRA_IMP
                 else
                 {
                     //show info based on cursor
-                    string sFrequency = "Frequency: " + frequency.ToString(FRAResult.GetFrequencyFormat(frequency, m_logFrequencyAxis));
-                    double capacitance = chartCapacitance.ChartAreas[0].AxisY.PixelPositionToValue(mousePoint.Y);
-                    string sCapacitance = "        Capacitance: " + capacitance.ToString(FRAResult.GetCapacitanceFormat(capacitance));
-                    double ESR = chartCapacitance.ChartAreas[0].AxisY2.PixelPositionToValue(mousePoint.Y);
-                    string s_ESR = "        Phase: " + ESR.ToString(FRAResult.GetImpedanceFormat(ESR));
-                    chartCapacitance.ChartAreas[0].AxisX.Title = sFrequency + sCapacitance + s_ESR + "      (CURSOR)";
+                    using (StringWriter writer = new StringWriter())
+                    {
+                        writer.Write("Frequency: " + frequency.ToString(FRAResult.GetFrequencyFormat(frequency, m_logFrequencyAxis)));
+                        double capacitance = chartCapacitance.ChartAreas[0].AxisY.PixelPositionToValue(mousePoint.Y);
+                        writer.Write("        Capacitance: " + capacitance.ToString(FRAResult.GetCapacitanceFormat(capacitance)));
+                        double ESR = chartCapacitance.ChartAreas[0].AxisY2.PixelPositionToValue(mousePoint.Y);
+                        writer.Write("        Phase: " + ESR.ToString(FRAResult.GetImpedanceFormat(ESR)));
+                        writer.Write("      (CURSOR)");
+                        for (int i = 0; i < m_Files.Count; i++) writer.WriteLine(); // same number of lines as normally shown
+                        chartCapacitance.ChartAreas[0].AxisX.Title = writer.ToString();
+                    }
                 }
             }
             else
@@ -1191,12 +1206,17 @@ namespace FRA_IMP
                 else
                 {
                     //show info based on cursor
-                    string sFrequency = "Frequency: " + frequency.ToString(FRAResult.GetFrequencyFormat(frequency, m_logFrequencyAxis));
-                    double inductance = chartInductance.ChartAreas[0].AxisY.PixelPositionToValue(mousePoint.Y);
-                    string sInductance = "        Inductance: " + inductance.ToString(FRAResult.GetInductanceFormat(inductance));
-                    double ESR = chartInductance.ChartAreas[0].AxisY2.PixelPositionToValue(mousePoint.Y);
-                    string s_ESR = "        Phase: " + ESR.ToString(FRAResult.GetImpedanceFormat(ESR));
-                    chartInductance.ChartAreas[0].AxisX.Title = sFrequency + sInductance + s_ESR + "      (CURSOR)";
+                    using (StringWriter writer = new StringWriter())
+                    {
+                        writer.Write("Frequency: " + frequency.ToString(FRAResult.GetFrequencyFormat(frequency, m_logFrequencyAxis)));
+                        double inductance = chartInductance.ChartAreas[0].AxisY.PixelPositionToValue(mousePoint.Y);
+                        writer.Write("        Inductance: " + inductance.ToString(FRAResult.GetInductanceFormat(inductance)));
+                        double ESR = chartInductance.ChartAreas[0].AxisY2.PixelPositionToValue(mousePoint.Y);
+                        writer.Write("        Phase: " + ESR.ToString(FRAResult.GetImpedanceFormat(ESR)));
+                        writer.Write("      (CURSOR)");
+                        for (int i = 0; i < m_Files.Count; i++) writer.WriteLine(); // same number of lines as normally shown
+                        chartInductance.ChartAreas[0].AxisX.Title = writer.ToString();
+                    }
                 }
             }
             else
@@ -1296,6 +1316,20 @@ namespace FRA_IMP
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (m_Files.ContrainsUnsavedFiles)
+            {
+                DialogResult dialogResult = MessageBox.Show("Unsaved Measurements will be lost, do you want to continue", "Unsaved Measurements!", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    SaveSettingsOnExit();
+                    return;
+                }
+                else
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
             SaveSettingsOnExit();
         }
 

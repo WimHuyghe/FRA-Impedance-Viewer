@@ -68,6 +68,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
+            this.comboBoxSweepDirection = new System.Windows.Forms.ComboBox();
             this.textBoxStepsPerDecade = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.textBoxStopFrequency = new System.Windows.Forms.TextBox();
@@ -86,7 +87,6 @@
             this.textBoxReferenceResistor = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
-            this.comboBoxSweepDirection = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.checkBoxCloseFormWhenFinished = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
@@ -558,6 +558,15 @@
             this.tableLayoutPanel8.Size = new System.Drawing.Size(540, 46);
             this.tableLayoutPanel8.TabIndex = 0;
             // 
+            // comboBoxSweepDirection
+            // 
+            this.comboBoxSweepDirection.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.comboBoxSweepDirection.FormattingEnabled = true;
+            this.comboBoxSweepDirection.Location = new System.Drawing.Point(408, 20);
+            this.comboBoxSweepDirection.Name = "comboBoxSweepDirection";
+            this.comboBoxSweepDirection.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxSweepDirection.TabIndex = 10;
+            // 
             // textBoxStepsPerDecade
             // 
             this.textBoxStepsPerDecade.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -752,15 +761,6 @@
             this.label23.Size = new System.Drawing.Size(98, 13);
             this.label23.TabIndex = 0;
             this.label23.Text = "Reference Resistor";
-            // 
-            // comboBoxSweepDirection
-            // 
-            this.comboBoxSweepDirection.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.comboBoxSweepDirection.FormattingEnabled = true;
-            this.comboBoxSweepDirection.Location = new System.Drawing.Point(408, 20);
-            this.comboBoxSweepDirection.Name = "comboBoxSweepDirection";
-            this.comboBoxSweepDirection.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxSweepDirection.TabIndex = 10;
             // 
             // button1
             // 
