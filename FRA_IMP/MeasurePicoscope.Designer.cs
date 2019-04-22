@@ -58,6 +58,9 @@
             this.comboBoxOutputCoupling = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel12 = new System.Windows.Forms.TableLayoutPanel();
+            this.textBoxExtraSettlingTime = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
             this.textBoxStimulusOffeset = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
@@ -66,6 +69,7 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.comboBoxSweepDirection = new System.Windows.Forms.ComboBox();
@@ -87,7 +91,7 @@
             this.textBoxReferenceResistor = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonVerbosity = new System.Windows.Forms.Button();
             this.checkBoxCloseFormWhenFinished = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -97,6 +101,7 @@
             this.tableLayoutPanel4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
+            this.tableLayoutPanel12.SuspendLayout();
             this.tableLayoutPanel7.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -425,10 +430,12 @@
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel5.Controls.Add(this.tableLayoutPanel12, 2, 1);
             this.tableLayoutPanel5.Controls.Add(this.tableLayoutPanel7, 1, 1);
             this.tableLayoutPanel5.Controls.Add(this.tableLayoutPanel6, 0, 1);
             this.tableLayoutPanel5.Controls.Add(this.label14, 1, 0);
             this.tableLayoutPanel5.Controls.Add(this.label15, 0, 0);
+            this.tableLayoutPanel5.Controls.Add(this.label22, 2, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
@@ -437,6 +444,39 @@
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel5.Size = new System.Drawing.Size(540, 46);
             this.tableLayoutPanel5.TabIndex = 0;
+            // 
+            // tableLayoutPanel12
+            // 
+            this.tableLayoutPanel12.ColumnCount = 2;
+            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+            this.tableLayoutPanel12.Controls.Add(this.textBoxExtraSettlingTime, 0, 0);
+            this.tableLayoutPanel12.Controls.Add(this.label24, 1, 0);
+            this.tableLayoutPanel12.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel12.Location = new System.Drawing.Point(273, 18);
+            this.tableLayoutPanel12.Name = "tableLayoutPanel12";
+            this.tableLayoutPanel12.RowCount = 1;
+            this.tableLayoutPanel12.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel12.Size = new System.Drawing.Size(129, 25);
+            this.tableLayoutPanel12.TabIndex = 11;
+            // 
+            // textBoxExtraSettlingTime
+            // 
+            this.textBoxExtraSettlingTime.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.textBoxExtraSettlingTime.Location = new System.Drawing.Point(3, 3);
+            this.textBoxExtraSettlingTime.Name = "textBoxExtraSettlingTime";
+            this.textBoxExtraSettlingTime.Size = new System.Drawing.Size(88, 20);
+            this.textBoxExtraSettlingTime.TabIndex = 0;
+            // 
+            // label24
+            // 
+            this.label24.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(97, 6);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(20, 13);
+            this.label24.TabIndex = 1;
+            this.label24.Text = "ms";
             // 
             // tableLayoutPanel7
             // 
@@ -450,6 +490,7 @@
             this.tableLayoutPanel7.Name = "tableLayoutPanel7";
             this.tableLayoutPanel7.RowCount = 1;
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel7.Size = new System.Drawing.Size(129, 25);
             this.tableLayoutPanel7.TabIndex = 8;
             // 
@@ -523,6 +564,16 @@
             this.label15.Size = new System.Drawing.Size(53, 13);
             this.label15.TabIndex = 0;
             this.label15.Text = "Amplitude";
+            // 
+            // label22
+            // 
+            this.label22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(273, 2);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(89, 13);
+            this.label22.TabIndex = 9;
+            this.label22.Text = "Extra Setting time";
             // 
             // groupBox4
             // 
@@ -762,15 +813,15 @@
             this.label23.TabIndex = 0;
             this.label23.Text = "Reference Resistor";
             // 
-            // button1
+            // buttonVerbosity
             // 
-            this.button1.Location = new System.Drawing.Point(567, 423);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(129, 23);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "Define Status Verbosity";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.buttonVerbosity.Location = new System.Drawing.Point(567, 423);
+            this.buttonVerbosity.Name = "buttonVerbosity";
+            this.buttonVerbosity.Size = new System.Drawing.Size(129, 23);
+            this.buttonVerbosity.TabIndex = 8;
+            this.buttonVerbosity.Text = "Define Status Verbosity";
+            this.buttonVerbosity.UseVisualStyleBackColor = true;
+            this.buttonVerbosity.Click += new System.EventHandler(this.buttonVerbosity_Click);
             // 
             // checkBoxCloseFormWhenFinished
             // 
@@ -788,7 +839,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1114, 457);
             this.Controls.Add(this.checkBoxCloseFormWhenFinished);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buttonVerbosity);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
@@ -813,6 +864,8 @@
             this.groupBox3.ResumeLayout(false);
             this.tableLayoutPanel5.ResumeLayout(false);
             this.tableLayoutPanel5.PerformLayout();
+            this.tableLayoutPanel12.ResumeLayout(false);
+            this.tableLayoutPanel12.PerformLayout();
             this.tableLayoutPanel7.ResumeLayout(false);
             this.tableLayoutPanel7.PerformLayout();
             this.tableLayoutPanel6.ResumeLayout(false);
@@ -895,7 +948,11 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.ComboBox comboBoxSweepDirection;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonVerbosity;
         private System.Windows.Forms.CheckBox checkBoxCloseFormWhenFinished;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel12;
+        private System.Windows.Forms.TextBox textBoxExtraSettlingTime;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label22;
     }
 }

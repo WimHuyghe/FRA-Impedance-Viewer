@@ -27,6 +27,7 @@ namespace FRA_IMP
             m_PicoscopeTimer = new Timer();
             m_PicoscopeTimer.Interval = 500;
             m_PicoscopeTimer.Tick += M_PicoscopeTimer_Tick;
+            ConnectScope();
         }
 
         private void InitForm()
@@ -52,6 +53,7 @@ namespace FRA_IMP
             // Stimulus
             textBoxStimulusAmplitude.DataBindings.Add("Text", FRA4Picoscope.Instance, "InitialStimulus");
             textBoxStimulusOffeset.DataBindings.Add("Text", FRA4Picoscope.Instance, "StimulusOffset");
+            textBoxExtraSettlingTime.DataBindings.Add("Text", FRA4Picoscope.Instance, "ExtraSettlingTimeMs");
 
             // Frequency Sweep
             textBoxStartFrequency.DataBindings.Add("Text", FRA4Picoscope.Instance, "StartFrequencyHz");
@@ -65,6 +67,19 @@ namespace FRA_IMP
 
             //  Other
             checkBoxCloseFormWhenFinished.DataBindings.Add("Checked", FRA4Picoscope.Instance, "AutoClosePicoFormWhenFinished");
+        }
+
+        private void ConnectScope()
+        {
+            try
+            {
+                logService.Debug("Trying to connect scope when form is first shown...");
+                FRA4Picoscope.Instance.ConnectPicoscope();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Connecting scope failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void StartMeasurement()
@@ -173,7 +188,7 @@ namespace FRA_IMP
             else m_PicoscopeTimer.Enabled = false;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonVerbosity_Click(object sender, EventArgs e)
         {
             Form statusVerbosity = new StatusVerbosity();
             statusVerbosity.Show();
