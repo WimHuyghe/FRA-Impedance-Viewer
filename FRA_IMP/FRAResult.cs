@@ -5,6 +5,85 @@ namespace FRA_IMP
 {
     public class FRAResult : IComparable
     {
+
+  //      V1 o------+
+  //            |
+  //           | |
+  //           | | Z_REF
+  //           | |
+  //            |
+  // V2 o------+
+  //            |
+  //           | |
+  //           | | Z_DUT
+  //           | |
+  //            |
+  //           ___
+  // GND        -
+
+  // Z_DUT = V2 / I
+
+  // I = Rref / (V2 - V1)
+   
+  // => Z_DUT = Rref* V2 / (V1-V2)
+
+  // Angle between V1 and V2 = θ, V1 at 0°equal to siggen.
+
+  // Current in polar coordinates: [r=sqrt(X²+Y²) //  α= tan-1 (y/x) ]
+  // <=> I = Rref / sqrt((V1 - V2 * cosθ)² +(V2 * sinθ)²)
+  // <=> I = Ref / sqrt(V1²-2 * V1 * V2 * cosθ + V2²)
+
+
+  //Magnitude & angle of Z_DUT: [dividing vectors in polar coordinates = divide magnitudes and substract phases]
+  //      Z_DUT = Rref* V2 / sqrt(V1²-2*V1* V2*cosθ + V2²)
+  //α =  θ – tan-1 ((-V2* sinθ)/(V1-V2* cosθ)) 
+
+  //To translate the above to “gain”, we know <=> gain = V2/V1
+  // ----------------------------------------------------
+  // | Zmag = Rref* gain / sqrt(1-2*gain* cosθ + gain²) | 
+  // ---------------------------------------------------- (equation 1)
+  // -------------------------------------------------
+  // | α =  θ – tan-1 ((-gain* sinθ)/(1-gain* cosθ)) |
+  // ------------------------------------------------- (equation 2)
+
+  // Capacitance:
+  // -------------
+  // Z_DUT expressed in rectangular format has only a real part equal to Resr and a negative imaginary part equal to 1/(2*π* f*C)
+   
+  // Z_DUT = Resr – j / (2*π* f*C)
+   
+  // Z_DUT = Zmag* cosα + j* Zmag*sinα
+  // =>
+
+  //----------------------
+  //| Resr = Zmag* cosα  |
+  //---------------------- (equation 3)
+  
+  //Zmag* sinα = -1 / (2 * π * f * C) <=>
+
+  //------------------------------------
+  //| C = -1 / (2 * π * f * Zmag * sinα |
+  //-------------------------------------(equation 4)
+
+  //Inductance:
+  //------------
+
+  //Z_DUT expressed in rectangular format has only a real part equal to Resr and a positive imaginary part equal to 2*π* f*L
+
+  //Z_DUT = Resr + j * 2 * π * f * L
+
+
+  //Z_DUT = Zmag* cosα + j* Zmag*sinα
+  //=>
+
+  // ----------------------
+  // | Resr = Zmag* cosα  |
+  // ---------------------- (equal to equation 3)
+  // -----------------------------
+  // | L = Zmag* sinα / (2*π* f) |
+  // ----------------------------- (equation 5)
+
+
         #region String formats for Result
 
         // format string for frequency in log Hz
@@ -62,26 +141,26 @@ namespace FRA_IMP
         public static string GetImpedanceFormat(double resistanceMilliOhms)
         {
             double impAbs = Math.Abs(resistanceMilliOhms);
-            if (impAbs > 10000000000) return FormatImpedanceMegaOhms;
-            if (impAbs > 10000000) return FormatImpedanceKiloOhms;
-            if (impAbs > 10000) return FormatImpedanceOhms;
+            if (impAbs > 1000000000) return FormatImpedanceMegaOhms;
+            if (impAbs > 1000000) return FormatImpedanceKiloOhms;
+            if (impAbs > 1000) return FormatImpedanceOhms;
             return FormatImpedanceMilliOhms;
         }
         public static string GetCapacitanceFormat(double capacitancePicoFarads)
         {
             double capAbs = Math.Abs(capacitancePicoFarads);
-            if (capAbs > 10000000000000) return FormatCapacitanceFarad;
-            if (capAbs > 10000000000) return FormatCapacitanceMilliFarad;
-            if (capAbs > 10000000) return FormatCapacitanceMicroFarad;
-            if (capAbs > 10000) return FormatCapacitanceNanoFarad;
+            if (capAbs > 1000000000000) return FormatCapacitanceFarad;
+            if (capAbs > 1000000000) return FormatCapacitanceMilliFarad;
+            if (capAbs > 1000000) return FormatCapacitanceMicroFarad;
+            if (capAbs > 1000) return FormatCapacitanceNanoFarad;
             return FormatCapacitancePicoFarad;
         }
         public static string GetInductanceFormat(double InductanceNanoHenry)
         {
             double inducAbs = Math.Abs(InductanceNanoHenry);
-            if (inducAbs > 10000000000) return FormatInductanceHenry;
-            if (inducAbs > 10000000) return FormatInductanceMilliHenry;
-            if (inducAbs > 10000) return FormatInductanceMicroHenry;
+            if (inducAbs > 1000000000) return FormatInductanceHenry;
+            if (inducAbs > 1000000) return FormatInductanceMilliHenry;
+            if (inducAbs > 1000) return FormatInductanceMicroHenry;
             return FormatInductanceNanoHenry;
         }
         public static string GetQFactorFormat(double qFactor)
@@ -168,7 +247,7 @@ namespace FRA_IMP
 
         public double DUTPhaseDegrees
         {
-            get { return PhaseRadians * 180 / Math.PI; }
+            get { return DUTPhaseRadians * 180 / Math.PI; }
         }
 
         public double DUTCapacitancePicoFarad

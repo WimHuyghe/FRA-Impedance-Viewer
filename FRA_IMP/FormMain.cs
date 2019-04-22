@@ -341,13 +341,15 @@ namespace FRA_IMP
 
         private void removeSeriesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (m_LegendItem != null)
+            if (m_LegendItem!= null)
             {
-                DialogResult dialogResult = MessageBox.Show("Unsaved Measurements will be lost, do you want to continue", "Unsaved Measurements!", MessageBoxButtons.YesNo);
+                Series serie = GetDisplayedChart().Series[m_LegendItem.SeriesName];
+                FRAFile file = (FRAFile) serie.Tag;
+                DialogResult dialogResult = DialogResult.Yes;
+                if (!file.IsSavedFile) dialogResult = MessageBox.Show("Unsaved Measurements will be lost, do you want to continue", "Unsaved Measurements!", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     logService.Info("Remove series from chart: " + m_LegendItem.SeriesName);
-                    Series serie = GetDisplayedChart().Series[m_LegendItem.SeriesName];
                     m_Files.Remove((FRAFile)serie.Tag);
                     return;
                 }
@@ -595,6 +597,7 @@ namespace FRA_IMP
                 chartGainPhase.ChartAreas[0].AxisY2.IsLogarithmic = false;
                 chartGainPhase.ChartAreas[0].AxisY2.LabelStyle.Format = FRAResult.GetPhaseFormat(m_Files.MaxPhaseDegrees);
                 chartGainPhase.ChartAreas[0].AxisY2.IntervalAutoMode = IntervalAutoMode.VariableCount;
+
                 chartGainPhase.ChartAreas[0].AxisY2.Enabled = AxisEnabled.True;
                 chartGainPhase.ChartAreas[0].AxisY2.ScaleView.Zoomable = true;
                 chartGainPhase.ChartAreas[0].AxisY2.MajorGrid.Enabled = false; // TODO: find a solution to make grids match 
@@ -908,7 +911,7 @@ namespace FRA_IMP
         {
             if (e.Location.X >= 0 && e.Location.Y >= 0)
             {
-                double zoomFactor = 0.2;   //0 to 1 = 0% to 100% Every Wheel Tick.
+                double zoomFactor = 0.1;   //0 to 1 = 0% to 100% Every Wheel Tick.
 
                 Axis xAxis = chart.ChartAreas[0].AxisX;
                 Axis yAxis = chart.ChartAreas[0].AxisY;

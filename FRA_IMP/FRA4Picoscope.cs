@@ -37,20 +37,39 @@ namespace FRA_IMP
 
         #region Picoscope control via FRA4Picoscope API
 
-        private void ConnectPicoscope()
+        public void ConnectPicoscope()
         {
-            logService.Info("Connecting Picoscope...");
-            byte result = FRA4PicoscopeAPI.Initialize();
-            if (result != 1) HandlePicoException("Failed to initialize Picoscope API: " + result.ToString());
-            else logService.Info("Picoscope API succesfully initialized");
-            FRA4PicoscopeAPI.EnableMessageLog(true);
-            FRA4PicoscopeAPI.AutoClearMessageLog(false);
-
-            result = FRA4PicoscopeAPI.SetScope(""); // TODO: add SN to directly connect to previous scope (currently API does not support reading SN)
-            if (result != 1) HandlePicoException("Failed to select Picoscope: " + result.ToString());
-            else logService.Info("Picoscope succesfully selected");
-
-            scopeConnected = true;
+            byte result = 1;
+            if (!scopeConnected)
+            {
+                logService.Info("Connecting Picoscope...");
+                try
+                {
+                    result = FRA4PicoscopeAPI.Initialize();
+                    if (result != 1) HandlePicoException("Failed to initialize Picoscope API: " + result.ToString());
+                    else logService.Info("Picoscope API succesfully initialized");
+                }
+                catch (Exception e)
+                {
+                    logService.Error(e.Message.ToString());
+                    logService.Error(e.StackTrace);
+                    logService.Error(e.HResult.ToString());
+                    throw;
+                }
+                FRA4PicoscopeAPI.EnableMessageLog(true);
+                FRA4PicoscopeAPI.AutoClearMessageLog(false);
+                result = FRA4PicoscopeAPI.SetScope(""); // TODO: add SN to directly connect to previous scope (currently API does not support reading SN)       
+            }
+            if (result != 1)
+            {
+                HandlePicoException("Failed to select Picoscope: " + result.ToString());
+                scopeConnected = false;
+            }
+            else
+            {
+                logService.Info("Picoscope succesfully connected");
+                scopeConnected = true;
+            }
         }
 
         private void SetLogVerbosity()
@@ -84,6 +103,7 @@ namespace FRA_IMP
             //if (InitialStimulus > MaxStimulus) result.WriteLine("Initial Stimulus must be smaller than max stimulus");
             if (StepsPerDecade < 1) result.WriteLine("Steps per decade must be greater than zero!");
             if (PhaseWrappingThreshold <= 0) result.WriteLine("Phase wrapping threshold must be greater than zero!");
+            if (ExtraSettlingTimeMs < 0) result.WriteLine("Extra settling time stimulus cannot be negative!");
 
             if (!result.ToString().Equals("")) logService.Warn("Settings incorrect:" + result.ToString());
             return result.ToString();
@@ -112,8 +132,7 @@ namespace FRA_IMP
             logService.Info("Input DUT channel:" + InputDUTChannel.ToString() + "   Coupling:" + InputDUTCoupling.ToString() + "   Atten:" + InputDUTAttenuation.ToString() + "   DC Offset:" + InputDUTDCOffset.ToString());
             logService.Info("Output DUT channel:" + OutputDUTChannel.ToString() + "   Coupling:" + OutputDUTCoupling.ToString() + "   Atten:" + OutputDUTAttenuation.ToString() + "   DC Offset:" + OutputDUTDCOffset.ToString());
             logService.Info("Initial stimulus:" + InitialStimulus.ToString() + "   Max Stimulis:" + MaxStimulus + "   Stimmulus Offset:" + StimulusOffset.ToString());
-            byte result = FRA4PicoscopeAPI.SetupChannels(OutputDUTChannel, OutputDUTCoupling, OutputDUTAttenuation, OutputDUTDCOffset, InputDUTChannel, InputDUTCoupling, InputDUTAttenuation, InputDUTDCOffset,
-                InitialStimulus, MaxStimulus, StimulusOffset);
+            byte result = FRA4PicoscopeAPI.SetupChannels(InputDUTChannel, InputDUTCoupling, InputDUTAttenuation, InputDUTDCOffset, OutputDUTChannel, OutputDUTCoupling, OutputDUTAttenuation, OutputDUTDCOffset,InitialStimulus, MaxStimulus, StimulusOffset);
             if (result != 1) HandlePicoException("Failed to setup channels and stimulus: " + result.ToString());
             else logService.Info("Picoscope channels and stimulus succesfully setup");
         }
@@ -343,7 +362,7 @@ namespace FRA_IMP
 
         public int ExtraSettlingTimeMs
         {
-            get { return m_SettingsManager.GetIntValue("ExtraSettlingTimeMs", 0); }
+            get { return m_SettingsManager.GetIntValue("ExtraSettlingTimeMs", 30); }
             set { m_SettingsManager.SetIntValue("ExtraSettlingTimeMs", value); }
         }
 
@@ -397,7 +416,7 @@ namespace FRA_IMP
 
         public int MinCyclesCaptured
         {
-            get { return m_SettingsManager.GetIntValue("MinCyclesCaptured", 16); }
+            get { return m_SettingsManager.GetIntValue("MinCyclesCaptured", 32); }
             set { m_SettingsManager.SetIntValue("MinCyclesCaptured", value); }
         }
 
