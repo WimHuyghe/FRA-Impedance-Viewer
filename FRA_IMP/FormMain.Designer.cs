@@ -143,7 +143,7 @@
             // 
             this.fRA4PicoScopeFileToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.Picoscope;
             this.fRA4PicoScopeFileToolStripMenuItem.Name = "fRA4PicoScopeFileToolStripMenuItem";
-            this.fRA4PicoScopeFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fRA4PicoScopeFileToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.fRA4PicoScopeFileToolStripMenuItem.Text = "FRA4PicoScope File";
             this.fRA4PicoScopeFileToolStripMenuItem.Click += new System.EventHandler(this.fRA4PicoScopeFileToolStripMenuItem_Click);
             // 
@@ -151,7 +151,7 @@
             // 
             this.keysightFileToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.keysight;
             this.keysightFileToolStripMenuItem.Name = "keysightFileToolStripMenuItem";
-            this.keysightFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.keysightFileToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.keysightFileToolStripMenuItem.Text = "Keysight File";
             this.keysightFileToolStripMenuItem.Click += new System.EventHandler(this.keysightFileToolStripMenuItem_Click);
             // 
@@ -159,7 +159,7 @@
             // 
             this.rhodeSwToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.RS;
             this.rhodeSwToolStripMenuItem.Name = "rhodeSwToolStripMenuItem";
-            this.rhodeSwToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rhodeSwToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.rhodeSwToolStripMenuItem.Text = "Rhode & Schwarz File";
             this.rhodeSwToolStripMenuItem.Click += new System.EventHandler(this.rhodeSwToolStripMenuItem_Click);
             // 
@@ -179,7 +179,7 @@
             // 
             this.fRA4PicoScopeFileToolStripMenuItem1.Image = global::FRA_IMP.Properties.Resources.Picoscope;
             this.fRA4PicoScopeFileToolStripMenuItem1.Name = "fRA4PicoScopeFileToolStripMenuItem1";
-            this.fRA4PicoScopeFileToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.fRA4PicoScopeFileToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
             this.fRA4PicoScopeFileToolStripMenuItem1.Text = "FRA4PicoScope File";
             this.fRA4PicoScopeFileToolStripMenuItem1.Click += new System.EventHandler(this.fRA4PicoScopeFileToolStripMenuItem1_Click);
             // 
@@ -187,7 +187,7 @@
             // 
             this.keysightFileToolStripMenuItem1.Image = global::FRA_IMP.Properties.Resources.keysight;
             this.keysightFileToolStripMenuItem1.Name = "keysightFileToolStripMenuItem1";
-            this.keysightFileToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.keysightFileToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
             this.keysightFileToolStripMenuItem1.Text = "Keysight File";
             this.keysightFileToolStripMenuItem1.Click += new System.EventHandler(this.keysightFileToolStripMenuItem1_Click);
             // 
@@ -195,7 +195,7 @@
             // 
             this.rhodeSchwarzFileToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.RS;
             this.rhodeSchwarzFileToolStripMenuItem.Name = "rhodeSchwarzFileToolStripMenuItem";
-            this.rhodeSchwarzFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rhodeSchwarzFileToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.rhodeSchwarzFileToolStripMenuItem.Text = "Rhode & Schwarz File";
             this.rhodeSchwarzFileToolStripMenuItem.Click += new System.EventHandler(this.rhodeSchwarzFileToolStripMenuItem_Click);
             // 
@@ -280,7 +280,7 @@
             // 
             this.picoscopeToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.Picoscope;
             this.picoscopeToolStripMenuItem.Name = "picoscopeToolStripMenuItem";
-            this.picoscopeToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.picoscopeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.picoscopeToolStripMenuItem.Text = "Picoscope";
             this.picoscopeToolStripMenuItem.Click += new System.EventHandler(this.picoscopeToolStripMenuItem_Click);
             // 
@@ -299,7 +299,7 @@
             // 
             this.shortcutsToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.shortcuts;
             this.shortcutsToolStripMenuItem.Name = "shortcutsToolStripMenuItem";
-            this.shortcutsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.shortcutsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.shortcutsToolStripMenuItem.Text = "Keyboard Shortcuts";
             this.shortcutsToolStripMenuItem.Click += new System.EventHandler(this.shortcutsToolStripMenuItem_Click);
             // 
@@ -307,20 +307,20 @@
             // 
             this.testSetupToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.about;
             this.testSetupToolStripMenuItem.Name = "testSetupToolStripMenuItem";
-            this.testSetupToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.testSetupToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.testSetupToolStripMenuItem.Text = "Test Setup";
             this.testSetupToolStripMenuItem.Click += new System.EventHandler(this.testSetupToolStripMenuItem_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(174, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("aboutToolStripMenuItem.Image")));
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
