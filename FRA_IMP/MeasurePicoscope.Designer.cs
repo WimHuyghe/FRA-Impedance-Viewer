@@ -126,6 +126,7 @@
             // 
             // buttonAbortMeasurement
             // 
+            this.buttonAbortMeasurement.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonAbortMeasurement.Location = new System.Drawing.Point(153, 424);
             this.buttonAbortMeasurement.Name = "buttonAbortMeasurement";
             this.buttonAbortMeasurement.Size = new System.Drawing.Size(129, 23);
@@ -835,8 +836,10 @@
             // 
             // MeasurePicoscope
             // 
+            this.AcceptButton = this.buttonStartMeasurement;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.buttonAbortMeasurement;
             this.ClientSize = new System.Drawing.Size(1114, 457);
             this.Controls.Add(this.checkBoxCloseFormWhenFinished);
             this.Controls.Add(this.buttonVerbosity);

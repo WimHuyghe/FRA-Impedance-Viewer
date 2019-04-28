@@ -295,7 +295,7 @@ namespace FRA_IMP
             string sFrequency = "Frequency: " + frequency.ToString(FRAResult.GetFrequencyFormat(frequency, logFrequencyAxis));
             double impedance = GetDUTImpedanceMilliOmhs(frequency);
             string sImpedance = "        Impedance: " + impedance.ToString(FRAResult.GetImpedanceFormat(impedance));
-            double phase = GetPhaseDegrees(frequency);
+            double phase = GetDUTPhaseDegrees(frequency);
             string sPhase = "        Phase: " + phase.ToString(FRAResult.GetPhaseFormat(phase));
             return sFrequency + sImpedance + sPhase;
         }
@@ -710,11 +710,19 @@ namespace FRA_IMP
             {            
                 m_GainDBSeries.Points.AddXY(result.FrequencyHz, result.GainFRA_DB);
                 m_PhaseDegreesSeries.Points.AddXY(result.FrequencyHz, result.PhaseDegrees);
+
                 m_DUTImpedanceMilliOhmSeries.Points.AddXY(result.FrequencyHz, result.DUTImpedanceMilliOhms);
-                m_DUTPhaseDegreesSeries.Points.AddXY(result.FrequencyHz, result.DUTPhaseDegrees);
-                m_DUTCapacitancePicoFaredSeries.Points.AddXY(result.FrequencyHz, result.DUTCapacitancePicoFarad);
+                m_DUTPhaseDegreesSeries.Points.AddXY(result.FrequencyHz, result.DUTPhaseDegrees);           
                 m_DUT_ESRMilliOhmSeries.Points.AddXY(result.FrequencyHz, result.DUT_ESR_MilliOhms);
-                m_DUTInductanceNanoHenrySeries.Points.AddXY(result.FrequencyHz, result.DUTInductanceNanoHenry);
+
+                double reactance;
+                if (CurrentSettings.Instance.PlotAbsoluteReactanceValues) reactance = Math.Abs(result.DUTCapacitancePicoFarad);
+                else reactance = result.DUTCapacitancePicoFarad;
+                m_DUTCapacitancePicoFaredSeries.Points.AddXY(result.FrequencyHz, reactance);
+
+                if (CurrentSettings.Instance.PlotAbsoluteReactanceValues) reactance = Math.Abs(result.DUTInductanceNanoHenry);
+                else reactance =result.DUTInductanceNanoHenry;
+                m_DUTInductanceNanoHenrySeries.Points.AddXY(result.FrequencyHz, reactance);
             }
 
             int numberOfMarkers = 50; // set marker step to ensure they are still visiable separately. +1 to ensure never zero (not allowed)

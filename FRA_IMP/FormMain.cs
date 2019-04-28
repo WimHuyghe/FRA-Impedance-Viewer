@@ -376,6 +376,12 @@ namespace FRA_IMP
             contextMenuStripRightClick.Show(this, new Point(posX, posY));//places the menu         
         }
 
+        private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form formPreferences = new FormPreferences();
+            formPreferences.Show();
+        }
+
         #endregion
 
         #region Dialogs & interaction

@@ -89,6 +89,12 @@ namespace FRA_IMP
             set { m_SettingsManager.SetBooleanValue("DisplayLegendInChart", value); }
         }
 
+        public bool PlotAbsoluteReactanceValues
+        {
+            get { return m_SettingsManager.GetBooleanValue("PlotAbsoluteReactanceValues", true); }
+            set { m_SettingsManager.SetBooleanValue("PlotAbsoluteReactanceValues", value); }
+        }
+
         #endregion
 
         #region Settins File Management
