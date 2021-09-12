@@ -214,8 +214,7 @@ namespace FRA_IMP
         {
             get
             {
-                if (GainFRA_DB > 0) return 0; // cannot be greated than 0 dB for passive devices (but sometimes is a little due to noise), and this gives an error in the calculation of the impedance plots
-                else return GainFRA_DB;
+                return GainFRA_DB; // gain is limited to zero dB before the result is created, hence no more correction here
             }
         }
 
@@ -250,7 +249,7 @@ namespace FRA_IMP
             get { return DUTPhaseRadians * 180 / Math.PI; }
         }
 
-        public double DUTCapacitancePicoFarad
+        public double DUTSeriesCapacitancePicoFarad
         {
             get { return -1e12 / (2 * Math.PI * FrequencyHz * DUTImpedanceMilliOhms / 1000 * Math.Sin(DUTPhaseRadians)); }
         }
@@ -260,19 +259,19 @@ namespace FRA_IMP
             get { return DUTImpedanceMilliOhms * Math.Cos(DUTPhaseRadians); }
         }
 
-        public double DUTInductanceNanoHenry
+        public double DUTSeriesInductanceNanoHenry
         {
             get { return DUTImpedanceMilliOhms / 1000 * Math.Sin(DUTPhaseRadians) / (2 * Math.PI * FrequencyHz) * 1e9; }
         }
 
         public double DUT_QCapacitor
         {
-            get { return 1 / (2 * Math.PI * FrequencyHz * DUTCapacitancePicoFarad * 1e-12 * DUT_ESR_MilliOhms / 1000); }
+            get { return 1 / (2 * Math.PI * FrequencyHz * DUTSeriesCapacitancePicoFarad * 1e-12 * DUT_ESR_MilliOhms / 1000); }
         }
 
         public double DUT_QInductor
         {
-            get { return (2 * Math.PI * FrequencyHz) * DUTInductanceNanoHenry * 1e-9 / (DUT_ESR_MilliOhms / 1000); }
+            get { return (2 * Math.PI * FrequencyHz) * DUTSeriesInductanceNanoHenry * 1e-9 / (DUT_ESR_MilliOhms / 1000); }
         }
 
         #endregion
@@ -296,8 +295,8 @@ namespace FRA_IMP
                     throw new NotImplementedException("TODO RhodeSchwarz Formatting"); // currently also not used for saving
                 case FRATableFormat.Excel_ALL:
                     return FrequencyHz.ToString()+ "\t" + GainFRA_DB.ToString() + "\t" + PhaseDegrees.ToString() + "\t" +
-                   DUTImpedanceMilliOhms.ToString() + "\t" + DUTCapacitancePicoFarad.ToString() + "\t" +
-                   DUTInductanceNanoHenry.ToString() + "\t" + DUT_ESR_MilliOhms.ToString() + "\t" + DUT_QCapacitor.ToString() + "\t" + DUT_QInductor.ToString();
+                   DUTImpedanceMilliOhms.ToString() + "\t" + DUTSeriesCapacitancePicoFarad.ToString() + "\t" +
+                   DUTSeriesInductanceNanoHenry.ToString() + "\t" + DUT_ESR_MilliOhms.ToString() + "\t" + DUT_QCapacitor.ToString() + "\t" + DUT_QInductor.ToString();
                 default:
                     return "";
             }

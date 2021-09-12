@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormPreferences));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBoxLimitGainMaxZeroDb = new System.Windows.Forms.CheckBox();
             this.checkBoxAbsoluteReactance = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
@@ -37,13 +38,24 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.checkBoxLimitGainMaxZeroDb);
             this.groupBox1.Controls.Add(this.checkBoxAbsoluteReactance);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(332, 49);
+            this.groupBox1.Size = new System.Drawing.Size(332, 74);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Plot Options";
+            // 
+            // checkBoxLimitGainMaxZeroDb
+            // 
+            this.checkBoxLimitGainMaxZeroDb.AutoSize = true;
+            this.checkBoxLimitGainMaxZeroDb.Location = new System.Drawing.Point(7, 43);
+            this.checkBoxLimitGainMaxZeroDb.Name = "checkBoxLimitGainMaxZeroDb";
+            this.checkBoxLimitGainMaxZeroDb.Size = new System.Drawing.Size(198, 17);
+            this.checkBoxLimitGainMaxZeroDb.TabIndex = 1;
+            this.checkBoxLimitGainMaxZeroDb.Text = "Limit Measured Gain to Max Zero dB";
+            this.checkBoxLimitGainMaxZeroDb.UseVisualStyleBackColor = true;
             // 
             // checkBoxAbsoluteReactance
             // 
@@ -58,7 +70,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 64);
+            this.label1.Location = new System.Drawing.Point(16, 100);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(328, 13);
             this.label1.TabIndex = 1;
@@ -68,7 +80,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(356, 93);
+            this.ClientSize = new System.Drawing.Size(356, 121);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -86,5 +98,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox checkBoxAbsoluteReactance;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox checkBoxLimitGainMaxZeroDb;
     }
 }

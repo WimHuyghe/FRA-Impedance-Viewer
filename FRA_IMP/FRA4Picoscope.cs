@@ -94,7 +94,7 @@ namespace FRA_IMP
             if (TestJigReferenceResistor < 0) result.WriteLine("Test Jig Reference resistor cannot be negative!");
 
             if (!scopeConnected) ConnectPicoscope(); // must be connected to check the min frequency
-            double minFrequency = FRA4PicoscopeAPI.GetMinFrequency();
+            double minFrequency = FRA4PicoscopeAPI.GetMinFrequency(RESOLUTION_T.RESOLUTION_MAX);
             if (StartFrequencyHz < minFrequency) result.WriteLine("Start frequency must be higher than " + minFrequency + " Hz");
             if (StopFrequencyHz < minFrequency) result.WriteLine("Stop frequency must be higher than " + minFrequency + " Hz");
             if (StartFrequencyHz > StopFrequencyHz) result.WriteLine("Start frequency must be higher than Stop frequency !");
@@ -123,7 +123,7 @@ namespace FRA_IMP
         {
             logService.Debug("Setting FRA Tuning...");
             FRA4PicoscopeAPI.SetFraTuning(PurityLowerLimit, ExtraSettlingTimeMs, AutoRangeTriesPerStep, AutoRangeTolerance, SmallSignalResolutionTolerance, MaxAutorangeAmplitude,
-                InputStartRange, OutputStartRange, AdaptiveStimulusTriesPerStep, TargetResponseAmplitudeTolerance, MinCyclesCaptured, MaxDftBandWidth, LowNoiseOversampling);
+                InputStartRange, OutputStartRange, AdaptiveStimulusTriesPerStep, TargetResponseAmplitudeTolerance, MinCyclesCaptured, MaxDftBandWidth, LowNoiseOversampling, RESOLUTION_T.RESOLUTION_AUTO);
         }
 
         private void SetUpChannels()
@@ -174,7 +174,7 @@ namespace FRA_IMP
             frequenciesLogHz = null; gainsDB = null; phasesDegrees = null;
 
             FRA_STATUS_T status = GetStatus();
-            while ((status = GetStatus()) == FRA_STATUS_T.FRA_STATUS_IN_PROGRESS)
+            while (((status = GetStatus()) == FRA_STATUS_T.FRA_STATUS_IN_PROGRESS) || (status == FRA_STATUS_T.FRA_STATUS_DATA))
             {
                 System.Threading.Thread.Sleep(1000);
             }
@@ -236,7 +236,7 @@ namespace FRA_IMP
 
         public double TestJigReferenceResistor
         {
-            get { return m_SettingsManager.GetDoubleValue("TestJigReferenceResistor", 1000.0); }
+            get { return m_SettingsManager.GetDoubleValue("TestJigReferenceResistor", 100.0); }
             set { m_SettingsManager.SetDoubleValue("TestJigReferenceResistor", value); }
         }
 
@@ -344,7 +344,7 @@ namespace FRA_IMP
 
         public double TargetResponseAmplitude
         {
-            get { return m_SettingsManager.GetDoubleValue("TargetResponseAmplitude", 0.0); }
+            get { return m_SettingsManager.GetDoubleValue("TargetResponseAmplitude", 10.0); }
             set { m_SettingsManager.SetDoubleValue("TargetResponseAmplitude", value); }
         }
 

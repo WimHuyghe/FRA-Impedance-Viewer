@@ -13,7 +13,7 @@ namespace FRA_IMP
         public static extern Byte SetScope(string sn);
 
         [DllImport("FRA4PicoScope.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
-        public static extern double GetMinFrequency();
+        public static extern double GetMinFrequency(RESOLUTION_T resolution);
 
         [DllImport("FRA4PicoScope.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern byte StartFRA(double startFreqHz, double stopFreqHz, int stepsPerDecade);
@@ -31,7 +31,7 @@ namespace FRA_IMP
         [DllImport("FRA4PicoScope.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern void SetFraTuning(double purityLowerLimit, int extraSettlingTimeMs, byte autorangeTriesPerStep, double autorangeTolerance,
             double smallSignalResolutionTolerance, double maxAutorangeAmplitude, int inputStartRange, int outputStartRange, byte adaptiveStimulusTriesPerStep,
-            double targetResponseAmplitudeTolerance, int minCyclesCaptured, double maxDftBw, int lowNoiseOversampling);
+            double targetResponseAmplitudeTolerance, int minCyclesCaptured, double maxDftBw, int lowNoiseOversampling, RESOLUTION_T deviceResolution);
 
         [DllImport("FRA4PicoScope.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern byte SetupChannels(PS_CHANNEL inputChannel, PS_COUPLING inputChannelCoupling, ATTEN_T inputChannelAttenuation, double inputDcOffset,
@@ -88,6 +88,20 @@ namespace FRA_IMP
         G,
         H,
     }
+    public enum RESOLUTION_T
+    {
+        RESOLUTION_8BIT = 0,
+        RESOLUTION_12BIT = 1,
+        RESOLUTION_14BIT = 2,
+        RESOLUTION_15BIT = 3,
+        RESOLUTION_16BIT = 4,
+        RESOLUTION_10BIT = 10,
+
+        RESOLUTION_MIN = 0,
+        RESOLUTION_AUTO = 126,
+        RESOLUTION_MAX = 127,
+        RESOLUTION_CURRENT = 128
+    }
 
     public enum PS_COUPLING
     {
@@ -102,8 +116,12 @@ namespace FRA_IMP
         X1,
         X10,
         X20,
+        X25,
+        X50,
         X100,
         X200,
+        X250,
+        X500,
         X1000,
     }
 
@@ -125,10 +143,11 @@ namespace FRA_IMP
         FRA_STATUS_IN_PROGRESS,
         FRA_STATUS_COMPLETE,
         FRA_STATUS_CANCELED,
-        FRA_STATUS_AUTORANGE_LIMIT,
+        FRA_STATUS_RETRY_LIMIT,
         FRA_STATUS_POWER_CHANGED,
         FRA_STATUS_FATAL_ERROR,
         FRA_STATUS_MESSAGE,
+        FRA_STATUS_DATA
     }
 
     public enum LOG_MESSAGE_FLAGS_T

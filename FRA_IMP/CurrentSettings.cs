@@ -91,8 +91,14 @@ namespace FRA_IMP
 
         public bool PlotAbsoluteReactanceValues
         {
-            get { return m_SettingsManager.GetBooleanValue("PlotAbsoluteReactanceValues", true); }
+            get { return m_SettingsManager.GetBooleanValue("PlotAbsoluteReactanceValues", false); }
             set { m_SettingsManager.SetBooleanValue("PlotAbsoluteReactanceValues", value); }
+        }
+
+        public bool LimitGainMaxZeroDb
+        {
+            get { return m_SettingsManager.GetBooleanValue("LimitGainMaxZeroDb", true); }
+            set { m_SettingsManager.SetBooleanValue("LimitGainMaxZeroDb", value); }
         }
 
         #endregion

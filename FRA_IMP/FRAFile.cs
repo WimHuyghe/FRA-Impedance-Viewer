@@ -55,7 +55,12 @@ namespace FRA_IMP
 
         private void AddResults(double[] frequencyHz, double[] gainDB, double[] phaseDegrees)
         {
-            for (int i = 0; i < frequencyHz.Length; i++) AddResult(new FRAResult(Math.Pow(10, frequencyHz[i]), gainDB[i], phaseDegrees[i], ReferenceResistorOhms));
+            for (int i = 0; i < frequencyHz.Length; i++)
+            {
+                double gain = gainDB[i];
+                if (CurrentSettings.Instance.LimitGainMaxZeroDb && gain > 0) gain = 0;
+                AddResult(new FRAResult(Math.Pow(10, frequencyHz[i]), gain, phaseDegrees[i], ReferenceResistorOhms));
+            }
         }
 
         private void AddResults()
@@ -119,12 +124,12 @@ namespace FRA_IMP
             if (result.DUTImpedanceMilliOhms < m_MinDUTImpedanceOhms) m_MinDUTImpedanceOhms = result.DUTImpedanceMilliOhms;
             if (result.DUTPhaseDegrees > m_MaxDUTPhaseDegrees) m_MaxDUTPhaseDegrees = result.DUTPhaseDegrees;
             if (result.DUTPhaseDegrees < m_MinDUTPhaseDegrees) m_MinDUTPhaseDegrees = result.DUTPhaseDegrees;
-            if (result.DUTCapacitancePicoFarad > m_MaxDUTCapacitancePicoFarad) m_MaxDUTCapacitancePicoFarad = result.DUTCapacitancePicoFarad;
-            if (result.DUTCapacitancePicoFarad < m_MinDUTCapacitancePicoFarad) m_MinDUTCapacitancePicoFarad = result.DUTCapacitancePicoFarad;
+            if (result.DUTSeriesCapacitancePicoFarad > m_MaxDUTCapacitancePicoFarad) m_MaxDUTCapacitancePicoFarad = result.DUTSeriesCapacitancePicoFarad;
+            if (result.DUTSeriesCapacitancePicoFarad < m_MinDUTCapacitancePicoFarad) m_MinDUTCapacitancePicoFarad = result.DUTSeriesCapacitancePicoFarad;
             if (result.DUT_ESR_MilliOhms > m_MaxDUT_ESR_Ohms) m_MaxDUT_ESR_Ohms = result.DUT_ESR_MilliOhms;
             if (result.DUT_ESR_MilliOhms < m_MinDUT_ESR_Ohms) m_MinDUT_ESR_Ohms = result.DUT_ESR_MilliOhms;
-            if (result.DUTInductanceNanoHenry > m_MaxDUTInductanceNanoHenry) m_MaxDUTInductanceNanoHenry = result.DUTInductanceNanoHenry;
-            if (result.DUTInductanceNanoHenry < m_MinDUTInductanceNanoHenry) m_MinDUTInductanceNanoHenry = result.DUTInductanceNanoHenry;
+            if (result.DUTSeriesInductanceNanoHenry > m_MaxDUTInductanceNanoHenry) m_MaxDUTInductanceNanoHenry = result.DUTSeriesInductanceNanoHenry;
+            if (result.DUTSeriesInductanceNanoHenry < m_MinDUTInductanceNanoHenry) m_MinDUTInductanceNanoHenry = result.DUTSeriesInductanceNanoHenry;
         }
 
         public IList<FRAResult> Results
@@ -223,10 +228,10 @@ namespace FRA_IMP
             if (resAbove != resBelow)
             {
                 double interpollFreqFactor = (frequency - resBelow.FrequencyHz) / (resAbove.FrequencyHz - resBelow.FrequencyHz);
-                double CapacitanceDelta = resAbove.DUTCapacitancePicoFarad - resBelow.DUTCapacitancePicoFarad;
-                return resBelow.DUTCapacitancePicoFarad + (interpollFreqFactor * CapacitanceDelta);
+                double CapacitanceDelta = resAbove.DUTSeriesCapacitancePicoFarad - resBelow.DUTSeriesCapacitancePicoFarad;
+                return resBelow.DUTSeriesCapacitancePicoFarad + (interpollFreqFactor * CapacitanceDelta);
             }
-            else return resBelow.DUTCapacitancePicoFarad;
+            else return resBelow.DUTSeriesCapacitancePicoFarad;
         }
 
         public double GetDUT_ESR_MilliOhms(double frequency)
@@ -249,10 +254,10 @@ namespace FRA_IMP
             if (resAbove != resBelow)
             {
                 double interpollFreqFactor = (frequency - resBelow.FrequencyHz) / (resAbove.FrequencyHz - resBelow.FrequencyHz);
-                double InductanceDelta = resAbove.DUTInductanceNanoHenry - resBelow.DUTInductanceNanoHenry;
-                return resBelow.DUTInductanceNanoHenry + (interpollFreqFactor * InductanceDelta);
+                double InductanceDelta = resAbove.DUTSeriesInductanceNanoHenry - resBelow.DUTSeriesInductanceNanoHenry;
+                return resBelow.DUTSeriesInductanceNanoHenry + (interpollFreqFactor * InductanceDelta);
             }
-            else return resBelow.DUTInductanceNanoHenry;
+            else return resBelow.DUTSeriesInductanceNanoHenry;
         }
 
         public double GetDUT_Q_Capacitor(double frequency)
@@ -603,7 +608,7 @@ namespace FRA_IMP
                 double sum = 0;
                 foreach (FRAResult result in m_FRAResults)
                 {
-                    sum += result.DUTCapacitancePicoFarad;
+                    sum += result.DUTSeriesCapacitancePicoFarad;
                     count++;
                 }
                 if (count != 0) return sum / count;
@@ -635,7 +640,7 @@ namespace FRA_IMP
                 double sum = 0;
                 foreach (FRAResult result in m_FRAResults)
                 {
-                    sum += result.DUTInductanceNanoHenry;
+                    sum += result.DUTSeriesInductanceNanoHenry;
                     count++;
                 }
                 if (count != 0) return sum / count;
@@ -716,12 +721,12 @@ namespace FRA_IMP
                 m_DUT_ESRMilliOhmSeries.Points.AddXY(result.FrequencyHz, result.DUT_ESR_MilliOhms);
 
                 double reactance;
-                if (CurrentSettings.Instance.PlotAbsoluteReactanceValues) reactance = Math.Abs(result.DUTCapacitancePicoFarad);
-                else reactance = result.DUTCapacitancePicoFarad;
+                if (CurrentSettings.Instance.PlotAbsoluteReactanceValues) reactance = Math.Abs(result.DUTSeriesCapacitancePicoFarad);
+                else reactance = result.DUTSeriesCapacitancePicoFarad;
                 m_DUTCapacitancePicoFaredSeries.Points.AddXY(result.FrequencyHz, reactance);
 
-                if (CurrentSettings.Instance.PlotAbsoluteReactanceValues) reactance = Math.Abs(result.DUTInductanceNanoHenry);
-                else reactance =result.DUTInductanceNanoHenry;
+                if (CurrentSettings.Instance.PlotAbsoluteReactanceValues) reactance = Math.Abs(result.DUTSeriesInductanceNanoHenry);
+                else reactance =result.DUTSeriesInductanceNanoHenry;
                 m_DUTInductanceNanoHenrySeries.Points.AddXY(result.FrequencyHz, reactance);
             }
 

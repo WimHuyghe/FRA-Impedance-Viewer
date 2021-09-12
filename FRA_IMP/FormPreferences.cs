@@ -16,6 +16,7 @@ namespace FRA_IMP
         {
             InitializeComponent();
             checkBoxAbsoluteReactance.DataBindings.Add("Checked", CurrentSettings.Instance, "PlotAbsoluteReactanceValues");
+            checkBoxLimitGainMaxZeroDb.DataBindings.Add("Checked", CurrentSettings.Instance, "LimitGainMaxZeroDb");
         }
     }
 }

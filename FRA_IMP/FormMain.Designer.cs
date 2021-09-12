@@ -283,7 +283,7 @@
             // 
             this.preferencesToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.preferences;
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.preferencesToolStripMenuItem.Text = "Preferences";
             this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
             // 
@@ -300,7 +300,7 @@
             this.picoscopeToolStripMenuItem.Image = global::FRA_IMP.Properties.Resources.Picoscope;
             this.picoscopeToolStripMenuItem.Name = "picoscopeToolStripMenuItem";
             this.picoscopeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
-            this.picoscopeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.picoscopeToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.picoscopeToolStripMenuItem.Text = "Picoscope";
             this.picoscopeToolStripMenuItem.Click += new System.EventHandler(this.picoscopeToolStripMenuItem_Click);
             // 
@@ -373,7 +373,7 @@
             this.tabPageGainPhase.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageGainPhase.Size = new System.Drawing.Size(792, 400);
             this.tabPageGainPhase.TabIndex = 0;
-            this.tabPageGainPhase.Text = "GainPhase";
+            this.tabPageGainPhase.Text = "Gain & Phase Measured by Scope";
             this.tabPageGainPhase.UseVisualStyleBackColor = true;
             // 
             // tabPageImpedance
@@ -384,7 +384,7 @@
             this.tabPageImpedance.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageImpedance.Size = new System.Drawing.Size(792, 400);
             this.tabPageImpedance.TabIndex = 1;
-            this.tabPageImpedance.Text = "Impedance";
+            this.tabPageImpedance.Text = "Impedance & Phase DUT";
             this.tabPageImpedance.UseVisualStyleBackColor = true;
             // 
             // chartImpedance
@@ -403,7 +403,7 @@
             this.tabPageCapacitance.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageCapacitance.Size = new System.Drawing.Size(792, 400);
             this.tabPageCapacitance.TabIndex = 2;
-            this.tabPageCapacitance.Text = "Capacitance";
+            this.tabPageCapacitance.Text = "Series Capacitance & Resistance DUT";
             this.tabPageCapacitance.UseVisualStyleBackColor = true;
             // 
             // chartCapacitance
@@ -422,7 +422,7 @@
             this.tabPageInductance.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageInductance.Size = new System.Drawing.Size(792, 400);
             this.tabPageInductance.TabIndex = 3;
-            this.tabPageInductance.Text = "Inductance";
+            this.tabPageInductance.Text = "Series Inductance & Resistance DUT";
             this.tabPageInductance.UseVisualStyleBackColor = true;
             // 
             // chartInductance
